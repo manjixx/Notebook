@@ -16,7 +16,17 @@
 > ## git
 
 - [安装教程](https://blog.csdn.net/wdh1994115/article/details/104916177)
+
+- git常用流程
+![git常用流程](https://img-blog.csdnimg.cn/20200528121000778.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2hhaWxvbmdjc2Ru,size_16,color_FFFFFF,t_70)
+
 - 查看版本 ```git --version```
+
+> ## TortoiseGit
+
+- TortoiseGit其实是一款开源的git的版本控制系统，也叫海龟git。TortoiseGit提供了人性化的图形化界面，不用像Git一样输入许多语句，像git init、git add、git commit这些语句就通通不用记了。轻松使用鼠标，就可以完成代码的提交和上传。对于使用本地Git的新手来说，TortoiseGit更加简便，更加容易上手。
+
+- [TortoiseGit的介绍和使用](https://blog.csdn.net/hailongcsdn/article/details/106399635)
 
 > ## MobaXterm
 - 终端
