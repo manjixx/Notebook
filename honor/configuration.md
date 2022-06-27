@@ -98,3 +98,4 @@ npm install -g @vue/cli
 > ## 代码编译运行与调试
 
 ### 前台编译与调试
+- 进入工程目录```OTAPlatform\baseline-portal-fronend```
