@@ -99,3 +99,16 @@ npm install -g @vue/cli
 
 ### 前台编译与调试
 - 进入工程目录```OTAPlatform\baseline-portal-fronend```
+
+### 后台程序编译运行
+
+#### Error
+- 问题1：
+  - 问题描述
+  > maven无法下载依赖，报错信息如下
+    ```bash
+    [ERROR] org.apache.maven.model.resolution.UnresolvableModelException: Failure to transfer org.springframework.boot:spring-boot-starter-parent:pom:2.6.4 from https://mirrors.huaweicloud.com/repository/maven/ was cached in the local repository, resolution will not be reattempted until the update interval of huaweicloud has elapsed or updates are forced. Original error: Could not transfer artifact org.springframework.boot:spring-boot-starter-parent:pom:2.6.4 from/to huaweicloud (https://mirrors.huaweicloud.com/repository/maven/): Transfer failed for https://mirrors.huaweicloud.com/repository/maven/org/springframework/boot/spring-boot-starter-parent/2.6.4/spring-boot-starter-parent-2.6.4.pom
+    ```
+  - 解决方案
+   > 查看setting.XML文件中的镜像源设置,将ota-5.0.0.pom文件放入\apache-maven-3.6.3\repo\com\hihonor\ota\ota\5.0.0
+
