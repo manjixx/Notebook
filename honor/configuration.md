@@ -104,8 +104,7 @@ npm install -g @vue/cli
 
 #### Error
 - 问题1：
-  - 问题描述
-  > maven无法下载依赖，报错信息如下
+  - 问题描述：maven无法下载依赖，报错信息如下
     ```bash
     [ERROR] org.apache.maven.model.resolution.UnresolvableModelException: Failure to transfer org.springframework.boot:spring-boot-starter-parent:pom:2.6.4 from https://mirrors.huaweicloud.com/repository/maven/ was cached in the local repository, resolution will not be reattempted until the update interval of huaweicloud has elapsed or updates are forced. Original error: Could not transfer artifact org.springframework.boot:spring-boot-starter-parent:pom:2.6.4 from/to huaweicloud (https://mirrors.huaweicloud.com/repository/maven/): Transfer failed for https://mirrors.huaweicloud.com/repository/maven/org/springframework/boot/spring-boot-starter-parent/2.6.4/spring-boot-starter-parent-2.6.4.pom
     ```
