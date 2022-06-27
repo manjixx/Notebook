@@ -39,3 +39,62 @@
 - 4. 远程桌面：使用RDP，VNC或XDMCP在计算机上显示完整的远程桌面
 - 5. 嵌入式Xserver：在Windows计算机上显示远程应用程序
 
+# IDEA 环境配置
+
+> ## 安装 IDEA OpenJDK、maven、nodejs
+- 安装Mave,[Maven路径配置](https://www.runoob.com/maven/maven-setup.html)
+```bash
+<!--Maven验证-->
+mvn -v
+Apache Maven 3.6.3 (cecedd343002696d0abb50b32b541b8a6ba2883f)
+Maven home: D:\software\apache-maven-3.6.3\bin\..
+Java version: 11.0.13, vendor: Oracle Corporation, runtime: C:\Program Files\Java\openjdk-11.0.13_8
+Default locale: zh_CN, platform encoding: GBK
+OS name: "windows 10", version: "10.0", arch: "amd64", family: "windows"
+```
+- 安装nodejs
+  - [Node.js安装配置](https://www.runoob.com/nodejs/nodejs-install-setup.html)
+
+  - 设置npm镜像
+  ```bash
+  npm config set registry http://cmc.cloudartifact.dragon.tools.hihonor.com/artifactory/api/npm/npm-virtual
+  ```
+  
+  - 设置Node-Sass的镜像地址
+  ```bash
+  npm config set SASS_BINARY_SITE http://cmc.cloudartifact.dragon.tools.hihonor.com/artifactory/mirrors/node-sass
+  ```
+  
+  - 设置全局模块安装路径（node_global）与缓存路径（node_cache）
+  ```bash
+  npm config set prefix "D:\software\nodejs\node_global" 
+  npm config set cache "D:\software\nodejs\node_cache"
+  ```
+
+> ## IDEA工程配置
+
+- 加载OTA工程
+
+- 设置JDK版本
+
+- maven设置
+```bash
+<!--配置文件路径-->
+C:\Users\w50010425\.m2\settings.xml
+<!--仓库路径-->
+D:\apache-maven-3.6.3\repository
+```
+
+
+> ## vue编译环境配置
+- 按照 安装nodejs中步骤完成nodejs安装与配置
+
+- 安装vue脚手架
+
+```bash
+npm install -g @vue/cli
+```
+
+> ## 代码编译运行与调试
+
+### 前台编译与调试
