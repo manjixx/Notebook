@@ -15,5 +15,13 @@
 
 > ## git
 
+- [安装教程](https://blog.csdn.net/wdh1994115/article/details/104916177)
 - 查看版本 ```git --version```
+
+> ## MobaXterm
+- 终端
+
+### MobaXterm主要功能
+- 1. 远程会话管理器：单个应用程序中的SSH，SFTP，telnet，VNC，Mosh，RDP连接
+![远程会话管理](https://img2018.cnblogs.com/blog/774327/201901/774327-20190111221725208-1355107434.png)
 
