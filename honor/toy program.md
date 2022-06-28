@@ -50,13 +50,14 @@ create table city(
    gdp int,
    comment text
  );
+ ```
 - insert
 ```sql
 	insert into city (`no`,`city_name`,`region`,`population`,`gdp`,`comment`)
    		values(1,"Xi'an",4,10000,8568346,"");
 ```
 
-```
+
 
 
 #
