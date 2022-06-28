@@ -40,5 +40,23 @@
 # 2.环境配置
 - Navigator 
 
+- 建表语句
+```sql
+create table city(
+   no int auto_increament primary key not null,
+   city_name varchar(50),
+   region int,
+   population int,
+   gdp int,
+   comment text
+ );
+- insert
+```sql
+	insert into city (`no`,`city_name`,`region`,`population`,`gdp`,`comment`)
+   		values(1,"Xi'an",4,10000,8568346,"");
+```
+
+```
+
 
 #
