@@ -61,8 +61,9 @@
 
 ## 云计算管理平台
 
+通过命令或者基于Web可视化控制面板来管理IaSS云端的资源池(服务器、存储和网络)
 ![云计算管理平台](https://pica.zhimg.com/v2-6fdd17f5eecc1a05605a6629210cc18a_1440w.jpg?source=172ae18b)
-
+[九大开源云管理平台](https://cloud.tencent.com/developer/news/494035)
 
 
 
