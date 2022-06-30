@@ -122,8 +122,12 @@
   - 8. 客户端支持保护安全免受 XSRF 攻击
 ## 6.2 基本使用
 # 7. Error
-- 解决eslint与prettier同时使用时校验冲突问题
+## 解决eslint与prettier同时使用时校验冲突问题
   ```bash
   19:15  error  Replace `⏎······:data="tableData"·⏎······style="width:·100%">⏎` with `:data="tableData"·style="width:·100%">`                          prettier/prettier
   ```
   参考如下链接：[vscode 中 prettier 和 ESLint 冲突解决](https://blog.csdn.net/u011705725/article/details/117036377?spm=1001.2101.3001.6650.4&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-4-117036377-blog-124181920.pc_relevant_multi_platform_whitelistv1&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-4-117036377-blog-124181920.pc_relevant_multi_platform_whitelistv1)
+  
+## 解决CORS跨域问题: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+  [后端配置](https://blog.51cto.com/u_12564104/5235494)
+  [前端配置](https://blog.51cto.com/u_12564104/5235494](https://learner.blog.csdn.net/article/details/88955387)
