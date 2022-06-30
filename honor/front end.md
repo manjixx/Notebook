@@ -91,7 +91,37 @@
 |-- README.md           // 说明
 ```
 
-# 5. Error
+# 5. Vue+Element 使用
+
+## 5.1 安装Element
+
+```bash
+  npm i element-ui -S
+```
+
+## 5.2 在main.js中引入
+```bash
+  import ElementUI from 'element-ui';
+  import 'element-ui/lib/theme-chalk/index.css';
+  Vue.use(ElementUI);
+```
+
+# 6. 前后端交互
+
+## 6.1 axios
+    axios 是一个基于 Promise 的 HTTP 库，可以用在浏览器和 node.js 中。axios是通过Promise实现对Ajax技术的一种封装，就像jquery对Ajax的封装一样，简单来说就是Ajax技术实现了局部数据的刷新，axios实现了对Ajax的封装
+
+### 6.1.1 Axios特性
+  - 1. 可以在浏览器中发送 XMLHttpRequests
+  - 2. 可以在 node.js 发送 http 请求
+  - 3. 支持 Promise API
+  - 4. 拦截请求和响应
+  - 5. 转换请求数据和响应数据
+  - 6. 能够取消请求
+  - 7. 自动转换 JSON 数据
+  - 8. 客户端支持保护安全免受 XSRF 攻击
+## 6.2 基本使用
+# 7. Error
 - 解决eslint与prettier同时使用时校验冲突问题
   ```bash
   19:15  error  Replace `⏎······:data="tableData"·⏎······style="width:·100%">⏎` with `:data="tableData"·style="width:·100%">`                          prettier/prettier
