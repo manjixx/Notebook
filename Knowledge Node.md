@@ -25,7 +25,7 @@
   - 1. 保证内网的安全，可以使用反向代理提供WAF功能，阻止web攻击
     ![反向代理保证内网安全](https://images2015.cnblogs.com/blog/305504/201611/305504-20161112124341280-1435223816.png)
     
-  - 2. 保证内网的安全，可以使用反向代理提供WAF功能，阻止web攻击
+  - 2. 负载均衡，通过反向代理服务器来优化网站的负载
     ![负载均衡](https://images2015.cnblogs.com/blog/305504/201611/305504-20161112124423530-566240666.png)
  
 ## 4. 二者区别
@@ -38,4 +38,15 @@
 
 ![正向代理与反向代理的区别](https://pic2.zhimg.com/80/480c1c45d2565e2f92fd930d25b73a18_720w.jpg?source=1940ef5c)
 
+## 5. Nginx的反向代理
+
+- Nginx概念
+
+Nginx("engine x")是一款是由俄罗斯的程序设计师Igor Sysoev所开发高性能的 Web和 反向代理 服务器，也是一个 IMAP/POP3/SMTP 代理服务器。
+
+在高连接并发的情况下，Nginx是Apache服务器不错的替代品。
+
+nginx支持配置反向代理，通过反向代理实现网站的负载均衡。这部分先写一个nginx的配置，后续需要深入研究nginx的代理模块和负载均衡模块。
+
+nginx通过proxy_pass_http 配置代理站点，upstream实现负载均衡。
 > # CDN 内容分发网络(Content Delivery Network)
