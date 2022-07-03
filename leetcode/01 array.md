@@ -273,7 +273,7 @@ class Solution {
       * 时间复杂度：$O(logn)$
       * 空间复杂度：$O(1)$
 
-### [删除排序数组中的重复项](https://leetcode.cn/problems/remove-duplicates-from-sorted-array/)
+### [26.删除排序数组中的重复项](https://leetcode.cn/problems/remove-duplicates-from-sorted-array/)
   * 思路：双指针
     * 定义快慢指针$slow,fast$，二者初始均指向1
     * 然后fast顺序向后移动，如果$nums[fast] != nums[fast - 1]$,则将nums[fast]与nums[slow]交换，同时slow自增1
