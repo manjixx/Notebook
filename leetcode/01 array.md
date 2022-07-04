@@ -10,12 +10,12 @@
   
 * 二分法的写法
   * 因为两种写法，左侧总是闭区间，因此```if(nums[mid] < target）```即$target$位于右侧区间时，left总是取$left = mid + 1$
-  * 写法一：**$[Left，right]$**
+  * 写法一：**$[left，right]$**
     * ```while(left <= right```，因为**此时为闭区间**所以此处**应该使用$<=$**
     * ```if(nums[mid] > target)```，即$target$位于左侧区间，因为此时取闭区间，且$nums[mid] != target$，所以$right = mid - 1$
   
   ```java
-   // 版本一
+   //版本一
     public int search(int[] nums, int target) {
 
         int left = 0;
