@@ -23,9 +23,67 @@
 名字时，必须更改这个主键。）
 
 - SQL(Structured Query Language):结构化查询语言，专门用来与数据库通信的语言
+
 # 2. MySQL简介
 
+- MySQL是一种数据库管理系统DBMS，是一种数据库软件
+
+- DBMS分为两种：
+  - 基于共享文件系统的DBMS
+  - 基于客户机—服务器的DBMS，MySQL、 Oracle以及Microsoft SQL Server等数据库是基于客户机—服
+务器的数据库。客户机—服务器应用分为两个不同的部分。 服务器部分是负责所有数据访问和处理的一个软件。客户机是与用户打交道的软件
+
+- MySQL工具
+  - mysql命令行实用程序
+    - 进入命令行使用工具后，使用；或\g结束
+    - 输入 help 或者 \h 获取帮助
+    - 输入 quit 或 exit 退出命令行实用工具 
+  ```bash
+  <!--完整的命令行选项和参数列表-->
+  mysql --help
+  ```
+  
+  - MySQL Administrator
+  - MySQL Query Browser，用来编写和执行MySQL命令 
+
 # 3. 使用MySQL
+
+```SQL
+<!--选择数据库-->
+USE Database;
+
+<!--查看允许的SHOW语句-->
+HELP SHOW;
+
+<!--显示数据库列表-->
+SHOW DATABASES;
+
+<!--显示数据库内的表  -->
+SHOW TABLES;
+
+<!--显示表列-->
+SHOW CLOUMNS FROM tablename;
+
+DESCRIBE tablename;
+
+<!--显示服务器状态信息  -->
+SHOW STATUS;
+
+<!--显示创建特定的数据库语句-->
+SHOW CREATE DATABASE;
+
+<!--显示特定的创建表语句-->
+SHOW CREATE TABLE;
+
+<!-- 显示授予用户的安全权限 -->
+SHOW GRANTS;
+
+<!--显示服务器错误-->
+SHOW ERRORS;
+
+<!--显示服务器告警信息-->
+SHOW WARNINGS;
+```
 
 # 4. 检索数据
 
