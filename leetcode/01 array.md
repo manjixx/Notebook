@@ -213,10 +213,10 @@
   > 给你旋转后的数组 nums 和一个整数 target ，如果 nums 中存在这个目标值 target ，则返回它的下标，否则返回 -1 。
 
 * 解题思路
-  * 通过查看当前$mid$位置分割出来的两个部分$[l,mid]$和$[mid + 1,r]$哪一部分是有序的，**可以利用有序部分确定$target$是否在当前区间内**，然后根据有序部分确定如何改变二分查找的上下界。
-    * 如果$[l,mid]$是有序的，且target 的大小满足 $[nums[l],nums[mid]]$ ，则我们应该将搜索范围缩小至 $[l, mid - 1]$，否则在 $[mid + 1, r]$ 中寻找。
+  * 通过查看当前${mid}$位置分割出来的两个部分${[l,mid]}$和${[mid + 1,r]}$哪一部分是有序的，**可以利用有序部分确定$target$是否在当前区间内**，然后根据有序部分确定如何改变二分查找的上下界。
+    * 如果${[l,mid]}$是有序的，且target 的大小满足 [nums[l],nums[mid]] ，则我们应该将搜索范围缩小至 ${[l, mid - 1]}$，否则在${[mid + 1, r]}$中寻找。
 
-    * 如果$[mid + 1,r]$是有序的，且target 的大小满足 $[nums[mid + 1],nums[r]]$ ，则我们应该将搜索范围缩小至 $[mid + 1, r]$，否则在 $[l, mid - 1]$ 中寻找。
+    * 如果${[mid + 1,r]}$是有序的，且target 的大小满足 [nums[mid + 1],nums[r]] ，则我们应该将搜索范围缩小至 ${[mid + 1, r]}$，否则在${[l, mid-1]}$ 中寻找。
 
 * 代码
 
@@ -286,6 +286,26 @@ class Solution {
 
 ### 思路二：双指针
 
+```java
+class Solution {
+    public int[] sortedSquares(int[] nums) {
+        int len = nums.length;
+        int[] ans = new int[len];
+        int left = 0,right = len - 1;
+        int k = len - 1;
+        while(k >= 0){
+            if(nums[left] * nums[left] > nums[right] * nums[right]){
+                ans[k--] = nums[left] * nums[left];
+                left++;
+            }else{
+                ans[k--] = nums[right] * nums[right];
+                right--;
+            }
+        }
+        return ans;
+    }
+}
+```
 
 ## 1.4 [长度最小的子数组](https://leetcode.com/problems/minimum-size-subarray-sum/)
 
