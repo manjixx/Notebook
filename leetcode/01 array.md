@@ -307,12 +307,31 @@ class Solution {
 }
 ```
 
-## 1.4 [长度最小的子数组](https://leetcode.com/problems/minimum-size-subarray-sum/)
+## 1.4 [长度最小的子数组](https://leetcode.cn/problems/minimum-size-subarray-sum/)
 
 ### 暴力解法
 
 
 ### 滑动窗口
+
+```java
+class Solution {
+    public int minSubArrayLen(int target, int[] nums) {
+        int min = Integer.MAX_VALUE;
+        int left = 0,right = 0;
+        int sum = 0;
+
+        while(right < nums.length){
+            sum = sum + nums[right++];
+            while(sum >= target){
+                min = min < right - left ? min : right - left;
+                sum = sum - nums[left++]; 
+            }
+        }
+        return min == Integer.MAX_VALUE ? 0 : min;
+    }
+}
+```
 
 
 ### 其他题目推荐
