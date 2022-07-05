@@ -205,7 +205,7 @@
   * 思路
   * 代码
 
-* [搜索旋转数组](https://leetcode-cn.com/problems/search-in-rotated-sorted-array/solution/sou-suo-xuan-zhuan-pai-xu-shu-zu-by-leetcode-solut/)
+* [搜索旋转数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
 
 * 题目描述
   > 整数数组 nums 按升序排列，数组中的值互不相同 。
