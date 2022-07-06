@@ -343,7 +343,37 @@ class Solution {
 
 ### 其他题目推荐
 
-- [水果成篮](https://leetcode.com/problems/fruit-into-baskets/)
+### [水果成篮](https://leetcode.com/problems/fruit-into-baskets/)
+
+- 代码
+```java
+class Solution {
+    public int totalFruit(int[] fruits) {
+        int sum = 0;
+        int left = 0;
+        int right = 0;
+        Map<Integer,Integer> type = new HashMap<Integer,Integer>();
+        int ans = 0;
+
+        for(;right < fruits.length;right++){
+            type.put(fruits[right],type.getOrDefault(fruits[right],0) + 1);
+            while(type.size() > 2){
+                type.put(fruits[left],type.get(fruits[left]) - 1);
+                if(type.get(fruits[left]) == 0){
+                    type.remove(fruits[left]);
+                }
+                left++;
+            }
+            ans = Math.max(ans,right - left + 1);
+        }
+        return ans;
+    }
+}
+```
+
+- 复杂度分析
+ - 时间复杂度：${O(n)}$
+ - 空间复杂度: ${O(n)}$
 
 - [最小覆盖子串](https://leetcode.com/problems/minimum-window-substring/)
 
