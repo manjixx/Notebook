@@ -311,11 +311,12 @@ class Solution {
 
 ### 暴力解法
 
+### 前缀和 + 二分查找
 
 ### 滑动窗口
 
-![滑动窗口](https://assets.leetcode-cn.com/solution-static/209/1.png)
-
+![滑动窗口]()
+- 代码
 ```java
 class Solution {
     public int minSubArrayLen(int target, int[] nums) {
@@ -334,6 +335,10 @@ class Solution {
     }
 }
 ```
+
+- 复杂度分析
+ - 时间复杂度：${O(n)}$
+ - 空间复杂度: ${O(1)}$
 
 
 ### 其他题目推荐
