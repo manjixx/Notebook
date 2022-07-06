@@ -314,6 +314,8 @@ class Solution {
 
 ### 滑动窗口
 
+![滑动窗口](https://assets.leetcode-cn.com/solution-static/209/1.png)
+
 ```java
 class Solution {
     public int minSubArrayLen(int target, int[] nums) {
