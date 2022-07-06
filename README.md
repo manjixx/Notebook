@@ -1,4 +1,4 @@
-[图书馆项目](https://blog.csdn.net/Neuf_Soleil/article/details/88925013)
+
 [npm安装包错](https://blog.csdn.net/watson2017/article/details/123418720)
 ```bash
 sudo chown -R Kyle ~/.npm 
