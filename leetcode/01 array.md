@@ -382,7 +382,57 @@ class Solution {
 
 ## [1.5 螺旋矩阵II](https://leetcode.com/problems/spiral-matrix-ii/)
 
-### 思路
+- 思路：模拟
+![螺旋矩阵模拟示意图](https://img-blog.csdnimg.cn/2020121623550681.png)
+
+- 代码
+```java
+class Solution {
+    public int[][] generateMatrix(int n) {
+        int loop = 0; // 控制循环次数
+        int[][] ans = new int[n][n];
+        int start = 0;  // 每次循环开始的点(start,start),即对角线
+        int count = 1;  // 填充数字
+        int i,j;
+        // 因为每次填充两行，所以n行需要循环n/2次，
+        // 对于奇数行，填充n / 2次之后只剩最中间位置未填充，做特殊处理
+        while(loop++ < n / 2){
+            // 模拟上侧从左往右
+            for(j = start; j < n - loop;j++){
+                ans[start][j] = count++;
+            }
+
+            // 模拟右侧从上往下
+            for(i = start;i < n -loop;i++){
+                ans[i][j] = count++;
+            }
+
+            // 模拟下侧从右往左
+            for(; j >= loop;j--){
+                ans[i][j] = count++;
+            }
+
+            // 模拟左侧从下往上
+            for(;i >= loop;i--){
+                ans[i][j] = count++;
+            }
+            start++;
+        }   
+
+        if(n % 2 == 1){
+            ans[start][start] = count;
+        }
+
+        return ans;
+    }
+}
+
+```
+
+- 复杂度分析
+ - 时间复杂度:${O(n^2)}$ 
+ - 空间复杂度:${O(1)}$ 
+
 
 
 ### 相似题目推荐
