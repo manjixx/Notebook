@@ -376,10 +376,11 @@ class Solution {
  - 空间复杂度: ${O(1)}$
  
  
-- [最小覆盖子串](https://leetcode.cn/problems/minimum-window-substring/)
+
+### [最小覆盖子串](https://leetcode.cn/problems/minimum-window-substring/)
 
 
-## 1.5 [螺旋矩阵II](https://leetcode.com/problems/spiral-matrix-ii/)
+## [1.5 螺旋矩阵II](https://leetcode.com/problems/spiral-matrix-ii/)
 
 ### 思路
 
