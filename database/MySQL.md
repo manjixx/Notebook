@@ -87,11 +87,143 @@ SHOW WARNINGS;
 
 # 4. 检索数据
 
+```sql
+<!-- 检索单个列-->
+SELECT COLUMN FROM TABLENAME;
+
+<!--检索多列-->
+SELECT COLUMN1,COLUMN2,...,COLUMNN FROM TABLENAME;
+
+<!--检索所有列-->
+SELECT * FROM TABLENAME;
+
+<!--检索不同的行-->
+SELECT **DISTINCT** COLUMN FROM TABLENAME;
+
+<!--限制结果-->
+<!--结果不多于5行-->
+SELECT COLUMN FROM TABLES 
+LILMIT 5;
+
+<!--开始检索的行和行数,从第5行开始的6行-->
+SELECT COLUMN FROM TABLES 
+LILMIT 5,6; 
+
+<!--完全限定表名和列名-->
+SELECT TABLE.CLOUMN FROM DATABASE.TABLE;
+
+```
+
 # 5. 排序检索数据
+
+- 子句： SQL语句由子句构成，有些子句是必需的，而有的是可选的。一个子句通常由一个关键字和所提供的数据组成。FROM就是一种子句
+
+```sql
+<!--ORDER BY子句,排序数据-->
+SELECT CLOUMN 
+FROM TABLE
+ORDER BY CLOUMN
+
+<!--按多个列排序-->
+<!-- 先按价格后按名称排序-->
+SELECT PROD_ID, PROD_PRICE, PROD_NAME
+FORM PRODUCT
+ORDER BY PROD_PRICE, PROD_NAME
+
+```
+- 降序排序关键字 DESC,只应用到直接位于其前面的列。对多个列上进行降序排序的时候，必须对每个列指定DESC。
+
+- 生序排序关键字ASC,但是升序是默认的。
+
+```sql
+<!--单列降序-->
+SELECT PROD_ID, PROD_PRICE,PROD_NAME
+FORM PRODUCT
+ORDER BY PROD_PRICE DESC;
+
+<!-- 多列中的一列进行排序-->
+SELECT PROD_ID, PROD_PRICE,PROD_NAME
+FORM PRODUCT
+ORDER BY PROD_PRICE DESC, PROD_NAME;
+
+<!--多列降序-->
+
+SELECT PROD_ID, PROD_PRICE,PROD_NAME
+FORM PRODUCT
+ORDER BY PROD_PRICE DESC, PROD_NAME DESC;
+
+```
 
 # 6. 过滤数据
 
+- 使用WHERE子句指定搜索条件
+
+- 在SELECT 语句中，数据根据WHERE子句中指定的搜索条件进行过滤。
+
+- WHERE子句在表名(FROM子句)之后,当与ORDER BY同时使用时，应该让ORDER BY位于 WHERE语句之后。
+
+- WHERE 子句操作符
+  - =       等于
+  - <>      不等于
+  - !=      不等于
+  - <       小于
+  - <=      小于等于
+  - >       大于
+  - >=      大于等于
+  - BETWEEN 在给定的两个值之间,包括开始值和结束值
+
+```sql
+<!--检查单个值-->
+SELECT PROD_NAME, PROD_PRICE
+FROM PRODUCTS
+WHERE PROD_NAME = 'Fuses';
+
+<!--小于某个值-->
+SELECT PROD_NAME,PROD_PRICE
+FORM PRODUCT
+WHERE PROD_PRICE < 10;
+
+<!--小于等于某个值-->
+SELECT PROD_NAME, PROD_PRICE
+FROM PRODUCTS
+WHERE PROD_PRICE <= 10;
+
+<!--不匹配检查，不等于检查-->
+SELECT PROD_NAME,PROD_PRICE
+FROM PRODUCTS
+WHERE PROD_NAME != 1000;
+
+
+SELECT PROD_NAME,PROD_PRICE
+FROM PRODUCTS
+WHERE PROD_NAME <> 1000;
+
+<!--检查范围内的值-->
+SELECT PROD_NAME,PROD_PRICE
+FORM PRODUCTS
+WHERE PROD_PRICE BETWEEN 5 AND 10;
+
+<!--空值检查-->
+SELECT PROD_NAME
+FROM PRODUCTS
+WHERE PROD_PRICE IS NULL;
+```
+
 # 7. 数据过滤
+
+- 组合WHERE子句:MySQL允许给出多个WHERE子句。这些子句以两种方式使用，以AND子句的方式或OR子句的方式使用
+
+- 操作符(operator):用来联结或者改变WHERE子句中的子句关键字，也称为逻辑操作符(logic operator);
+
+- AND: 用在WHERE子句中的关键字，用来指示检索满足所有给定条件的行
+
+- OR：表示匹配任一条件的行
+
+- AND 优先级 高于 OR
+
+- IN:对圆括号中的任一条件进行匹配
+
+- NOT：否定其后所跟的任何条件
 
 
 # 8. 使用通配符进行过滤
