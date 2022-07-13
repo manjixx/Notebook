@@ -160,7 +160,7 @@ ORDER BY PROD_PRICE DESC, PROD_NAME DESC;
 
 - 在SELECT 语句中，数据根据WHERE子句中指定的搜索条件进行过滤。
 
-- WHERE子句在表名(FROM子句)之后,当与ORDER BY同时使用时，应该让ORDER BY位于 WHERE语句之后。
+- WHERE子句在表名(FROM子句)之后,当与ORDER BY同时使用时，**应该让ORDER BY位于 WHERE语句之后**。
 
 - WHERE 子句操作符
   - =       等于
@@ -168,8 +168,8 @@ ORDER BY PROD_PRICE DESC, PROD_NAME DESC;
   - !=      不等于
   - <       小于
   - <=      小于等于
-  - >       大于
-  - >=      大于等于
+  - \>       大于
+  - \>=      大于等于
   - BETWEEN 在给定的两个值之间,包括开始值和结束值
 
 ```sql
@@ -215,20 +215,191 @@ WHERE PROD_PRICE IS NULL;
 
 - 操作符(operator):用来联结或者改变WHERE子句中的子句关键字，也称为逻辑操作符(logic operator);
 
-- AND: 用在WHERE子句中的关键字，用来指示检索满足所有给定条件的行
+- AND: 用在WHERE子句中的关键字，用来指示检索满足所有给定条件的行, 添加多个过滤条件，每添加一条就要使用一个AND。
 
 - OR：表示匹配任一条件的行
 
 - AND 优先级 高于 OR
 
-- IN:对圆括号中的任一条件进行匹配
+- IN: Z指定条件范围，对圆括号中的任一条件进行匹配
 
 - NOT：否定其后所跟的任何条件
 
+```SQL
+<!-- AND附加条件 -->
+SELECT PROD_ID,PROD_PRICE,PROD_NAME
+FORM PRODUCTS
+WHERE VEND_ID = 1003 AND PRDE_PRICE <= 10;
+
+<!-- OR操作符 -->
+
+SELECT PROD_NAME PROD_PRICE
+FROM PRODUCT
+WHERE VEND_ID = 1002 OR VEND_ID = 1003
+
+<!-- 计算由1002或1003制作且价格为10美元以上的商品 -->
+
+SELECT PROD_NAME PROD_PRICE
+FORM PRODUCT
+WHERE (VEND_ID = 1002 OR VEND_ID = 1003) AND PROD_PRICE >= 10;
+
+<!-- IN操作符 -->
+SELECT PROD_NAME,PROD_PRICE
+FORM PRODUCT
+WHERE VEND_ID IN (1002,1003)
+ORDER BY PROD_NAME;
+
+<!-- NOT 操作符 -->
+SELECT PROD_NAME,PROD_PRICE
+FROM PRODUCT
+WHERE VEND_ID NOT IN (1002,1003)
+ORDER BY PROD_NAME;
+
+```
 
 # 8. 使用通配符进行过滤
 
+
+## LIKE操作符
+
+- 通配符：用来匹配值得一部分的特殊字符
+
+- 搜索模式：由字面值、通配符或者两者组合形成的搜索条件
+
+### SQL常见通配符
+- 百分号通配符 % ： 表示任何字符出现任意次数
+- 下化线通配符 _ : 其用途与%一致，但是表示只匹配单个字符而不是多个字符
+
+```sql
+<!-- % 通配符 -->
+<!-- 该语句表示匹配开头为jet的任意商品名 -->
+SELECT PROD_NAME,PROD_PRICE
+FORM PRODUCT
+WHERE PROD_NAME LIKE 'jet%';
+
+<!-- _ 通配符 -->
+<!-- 表示匹配开头为jet其后一个字符为任意字符的商品名 -->
+SELECT PROD_NAME,PROD_PRICE
+FROM PRODUCT
+WHERE PROD_NAME LIKE 'jet_';
+```
+
 # 9. 使用正则表达式进行搜索
+
+- REGEXP：正则表达关键字
+
+## 基本字符匹配
+
+- REGEXP与LIKE的区别
+  - REGEXP 在列值内匹配，如果被匹配的文本在列值中出现，REGEXP将会找到它，相应的行将被返回
+  - LIKE匹配整列，如果被匹配的文本在列值中出现，LIKE也不会找到它，相应的行也不会被返回（除非使用通配符）
+ 
+- . 在正则表达式中表示匹配任意一个字符
+```sql
+<!-- 一般正则表达式的使用 -->
+SELECT PROD_NAME
+FORM PRODUCTS
+WHERE PROD_NAME REGEXP '1000'
+ORDER BY PROD_NAME;
+
+<!-- 正则表达式中 . 的使用 -->
+SELECT PROD_NAME
+FORM PRODUCTS
+WHERE PROD_NAME REGEXP '.000'
+ORDER BY PROD_NAME;
+
+```
+
+## 进行OR匹配
+- 为搜索两个串之一(或者为整个串，或者为另一个串)，使用 | 
+
+- 两个以上的OR条件，'1000 | 2000 | 3000'将匹配1000或2000或3000
+
+```sql
+<!-- 匹配其中之一 -->
+SELECT PROD_NAME 
+FORM PRODUCTS
+WHERE PROD_NAME REGEXP '1000 | 2000'
+ORDER BY PROD_NAME;
+```
+
+## 匹配几个字符之一
+
+- REGEXP '[123] TON' 表示匹配1或2或3
+
+- '[123] TON' 是 '[1|2|3] TON'的简写，注意此处[]不可省略，否则表示1或2或3 TON
+
+- 否定字符集合，匹配除指定字符集合意外的任何东西 '[^123] TON',表示除 1 TON, 2 TON, 3 TON以外的所有字段
+
+```sql
+SELECT PROD_NAME
+FORM PRODUCTS
+WHERE PROD_NAME REGEXP '[123] TON';
+
+```
+
+## 匹配范围
+- [0-9] 表示将匹配[0123456789]
+- [a-z]匹配任意字母字符
+
+```sql
+SELECT PROD_NAME
+FROM PRODUCTS
+WHERE PROD_NAME REGEXP '[1-5] TON'
+ORDER BY PROD_NAME;
+```
+
+## 匹配特殊字符
+```sql
+SELECT PROD_NAME
+FROM PRODUCTS
+WHERE PROD_NAME REGEXP '[1-5] TON'
+ORDER BY PROD_NAME;
+
+<!-- 输出结果为 
+  .5 ton anvil  
+  1 ton anvil 
+  2 ton anvil
+  其中.5 ton anvil由于5 ton匹配，所以返回 .5 ton
+ -->
+```
+
+## 匹配特殊字符
+
+- 现阶段接触到的特殊字符 . [] | -
+- 如果需要匹配这些特殊字符则必须以\\为前导
+
+- \\也用来引用元字符
+  -  \\f 换页
+  -  \\n 换行
+  -  \\r 回车
+  -  \\t 制表
+  -  \\v 纵向制表
+
+- \ 或\\?
+  
+  多数正则表达式使用单个反斜杠转义特殊字符，以便能使用这些字符本身，但MySQL要求两个反斜杠，MySQL自己解释一个，正则表达式库解释另一个
+  
+```sql
+<!--正则匹配 .-->
+SELECT VEND_NAME
+FROM VENDORS
+WHERE VENDER_NAME REGEXP '\\.'
+ORDER BY VEND_NAME;
+
+```
+
+## 匹配字符类
+
+- 为方便期间可以将自己经常使用的数字、所有字母字符或所有数字字母字符等的匹配。可以使用预定义的字符集，称为字符类
+
+- 字符类
+  - [:alnum:] 任意字母和数字，同[a-zA-Z0-9]
+  - [:alpha:] 任意字符,同[a-zA-Z]
+  - [:blank:] 空格和制表，同[\\t]
+  - [:cntrl:] ASCII控制字符(ASCII 0到31 和 127)
+  - [] 
+
 
 # 10. 创建计算字段
 
