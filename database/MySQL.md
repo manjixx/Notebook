@@ -1,8 +1,25 @@
 # MySQL测试方法
 
 - 测试正则表达式
+  
+在不使用数据库表的情况下可以用SELECT来测试正则表达式，REGEXP检查总是返回0(没有匹配)或1(匹配)
+
+```SQL
+  SELECT 'hello' REGEXP '[0-9]';
+```
 
 - 测试计算
+
+```SQL
+/*返回abc*/
+SELECT Trim('abc');
+
+/*当前日期和时间*/
+SELECT Now();
+
+/*返回6*/
+SELECT(3*2);
+```
 
 # 1.了解SQL
 
@@ -58,64 +75,64 @@
 /*选择数据库*/
 USE Database;
 
---查看允许的SHOW语句--
+/*查看允许的SHOW语句 */
 HELP SHOW;
 
-<!--显示数据库列表-->
+/*显示数据库列表 */
 SHOW DATABASES;
 
-<!--显示数据库内的表  -->
+/* 显示数据库内的表   */
 SHOW TABLES;
 
-<!--显示表列-->
+/* 显示表列 */
 SHOW CLOUMNS FROM tablename;
 
 DESCRIBE tablename;
 
-<!--显示服务器状态信息  -->
+/* 显示服务器状态信息 */
 SHOW STATUS;
 
-<!--显示创建特定的数据库语句-->
+/* 显示创建特定的数据库语句 */
 SHOW CREATE DATABASE;
 
-<!--显示特定的创建表语句-->
+/* 显示特定的创建表语句 */
 SHOW CREATE TABLE;
 
-<!-- 显示授予用户的安全权限 -->
+/* 显示授予用户的安全权限 */
 SHOW GRANTS;
 
-<!--显示服务器错误-->
+/* 显示服务器错误 */
 SHOW ERRORS;
 
-<!--显示服务器告警信息-->
+/* 显示服务器告警信息 */
 SHOW WARNINGS;
 ```
 
 # 4. 检索数据
 
 ```sql
-<!-- 检索单个列-->
+/*  检索单个列 */
 SELECT COLUMN FROM TABLENAME;
 
-<!--检索多列-->
+/* 检索多列 */
 SELECT COLUMN1,COLUMN2,...,COLUMNN FROM TABLENAME;
 
-<!--检索所有列-->
+/* 检索所有列 */
 SELECT * FROM TABLENAME;
 
-<!--检索不同的行-->
+/* 检索不同的行 */
 SELECT **DISTINCT** COLUMN FROM TABLENAME;
 
-<!--限制结果-->
-<!--结果不多于5行-->
+/* 限制结果 */
+/* 结果不多于5行 */
 SELECT COLUMN FROM TABLES 
 LILMIT 5;
 
-<!--开始检索的行和行数,从第5行开始的6行-->
+/* 开始检索的行和行数,从第5行开始的6行 */
 SELECT COLUMN FROM TABLES 
 LILMIT 5,6; 
 
-<!--完全限定表名和列名-->
+/* 完全限定表名和列名-->
 SELECT TABLE.CLOUMN FROM DATABASE.TABLE;
 
 ```
@@ -125,13 +142,13 @@ SELECT TABLE.CLOUMN FROM DATABASE.TABLE;
 - 子句： SQL语句由子句构成，有些子句是必需的，而有的是可选的。一个子句通常由一个关键字和所提供的数据组成。FROM就是一种子句
 
 ```sql
-<!--ORDER BY子句,排序数据-->
+/* ORDER BY子句,排序数据 */
 SELECT CLOUMN 
 FROM TABLE
-ORDER BY CLOUMN
+ORDER BY CLOUMN;
 
-<!--按多个列排序-->
-<!-- 先按价格后按名称排序-->
+/* 按多个列排序 */
+/*  先按价格后按名称排序 */
 SELECT PROD_ID, PROD_PRICE, PROD_NAME
 FORM PRODUCT
 ORDER BY PROD_PRICE, PROD_NAME
@@ -142,17 +159,17 @@ ORDER BY PROD_PRICE, PROD_NAME
 - 生序排序关键字ASC,但是升序是默认的。
 
 ```sql
-<!--单列降序-->
+/* 单列降序 */
 SELECT PROD_ID, PROD_PRICE,PROD_NAME
 FORM PRODUCT
 ORDER BY PROD_PRICE DESC;
 
-<!-- 多列中的一列进行排序-->
+/*  多列中的一列进行排序 */
 SELECT PROD_ID, PROD_PRICE,PROD_NAME
 FORM PRODUCT
 ORDER BY PROD_PRICE DESC, PROD_NAME;
 
-<!--多列降序-->
+/* 多列降序 */
 
 SELECT PROD_ID, PROD_PRICE,PROD_NAME
 FORM PRODUCT
@@ -179,22 +196,22 @@ ORDER BY PROD_PRICE DESC, PROD_NAME DESC;
   - BETWEEN 在给定的两个值之间,包括开始值和结束值
 
 ```sql
-<!--检查单个值-->
+/* 检查单个值 */
 SELECT PROD_NAME, PROD_PRICE
 FROM PRODUCTS
 WHERE PROD_NAME = 'Fuses';
 
-<!--小于某个值-->
+/* 小于某个值 */
 SELECT PROD_NAME,PROD_PRICE
 FORM PRODUCT
 WHERE PROD_PRICE < 10;
 
-<!--小于等于某个值-->
+/* 小于等于某个值 */
 SELECT PROD_NAME, PROD_PRICE
 FROM PRODUCTS
 WHERE PROD_PRICE <= 10;
 
-<!--不匹配检查，不等于检查-->
+/* 不匹配检查，不等于检查 */
 SELECT PROD_NAME,PROD_PRICE
 FROM PRODUCTS
 WHERE PROD_NAME != 1000;
@@ -204,12 +221,12 @@ SELECT PROD_NAME,PROD_PRICE
 FROM PRODUCTS
 WHERE PROD_NAME <> 1000;
 
-<!--检查范围内的值-->
+/* 检查范围内的值 */
 SELECT PROD_NAME,PROD_PRICE
 FORM PRODUCTS
 WHERE PROD_PRICE BETWEEN 5 AND 10;
 
-<!--空值检查-->
+/* 空值检查 */
 SELECT PROD_NAME
 FROM PRODUCTS
 WHERE PROD_PRICE IS NULL;
@@ -232,30 +249,30 @@ WHERE PROD_PRICE IS NULL;
 - NOT：否定其后所跟的任何条件
 
 ```SQL
-<!-- AND附加条件 -->
+/*  AND附加条件  */
 SELECT PROD_ID,PROD_PRICE,PROD_NAME
 FORM PRODUCTS
 WHERE VEND_ID = 1003 AND PRDE_PRICE <= 10;
 
-<!-- OR操作符 -->
+/*  OR操作符  */
 
 SELECT PROD_NAME PROD_PRICE
 FROM PRODUCT
 WHERE VEND_ID = 1002 OR VEND_ID = 1003
 
-<!-- 计算由1002或1003制作且价格为10美元以上的商品 -->
+/*  计算由1002或1003制作且价格为10美元以上的商品  */
 
 SELECT PROD_NAME PROD_PRICE
 FORM PRODUCT
 WHERE (VEND_ID = 1002 OR VEND_ID = 1003) AND PROD_PRICE >= 10;
 
-<!-- IN操作符 -->
+/*  IN操作符  */
 SELECT PROD_NAME,PROD_PRICE
 FORM PRODUCT
 WHERE VEND_ID IN (1002,1003)
 ORDER BY PROD_NAME;
 
-<!-- NOT 操作符 -->
+/*  NOT 操作符  */
 SELECT PROD_NAME,PROD_PRICE
 FROM PRODUCT
 WHERE VEND_ID NOT IN (1002,1003)
@@ -277,14 +294,14 @@ ORDER BY PROD_NAME;
 - 下化线通配符 _ : 其用途与%一致，但是表示只匹配单个字符而不是多个字符
 
 ```sql
-<!-- % 通配符 -->
-<!-- 该语句表示匹配开头为jet的任意商品名 -->
+/*  % 通配符  */
+/*  该语句表示匹配开头为jet的任意商品名  */
 SELECT PROD_NAME,PROD_PRICE
 FORM PRODUCT
 WHERE PROD_NAME LIKE 'jet%';
 
-<!-- _ 通配符 -->
-<!-- 表示匹配开头为jet其后一个字符为任意字符的商品名 -->
+/*  _ 通配符  */
+/*  表示匹配开头为jet其后一个字符为任意字符的商品名  */
 SELECT PROD_NAME,PROD_PRICE
 FROM PRODUCT
 WHERE PROD_NAME LIKE 'jet_';
@@ -302,13 +319,13 @@ WHERE PROD_NAME LIKE 'jet_';
  
 - . 在正则表达式中表示匹配任意一个字符
 ```sql
-<!-- 一般正则表达式的使用 -->
+/*  一般正则表达式的使用  */
 SELECT PROD_NAME
 FORM PRODUCTS
 WHERE PROD_NAME REGEXP '1000'
 ORDER BY PROD_NAME;
 
-<!-- 正则表达式中 . 的使用 -->
+/*  正则表达式中 . 的使用  */
 SELECT PROD_NAME
 FORM PRODUCTS
 WHERE PROD_NAME REGEXP '.000'
@@ -322,7 +339,7 @@ ORDER BY PROD_NAME;
 - 两个以上的OR条件，'1000 | 2000 | 3000'将匹配1000或2000或3000
 
 ```sql
-<!-- 匹配其中之一 -->
+/*  匹配其中之一 */
 SELECT PROD_NAME 
 FORM PRODUCTS
 WHERE PROD_NAME REGEXP '1000 | 2000'
@@ -362,12 +379,12 @@ FROM PRODUCTS
 WHERE PROD_NAME REGEXP '[1-5] TON'
 ORDER BY PROD_NAME;
 
-<!-- 输出结果为 
+/*  输出结果为 
   .5 ton anvil  
   1 ton anvil 
   2 ton anvil
   其中.5 ton anvil由于5 ton匹配，所以返回 .5 ton
- -->
+ */
 ```
 
 ## 匹配特殊字符
@@ -387,7 +404,7 @@ ORDER BY PROD_NAME;
   多数正则表达式使用单个反斜杠转义特殊字符，以便能使用这些字符本身，但MySQL要求两个反斜杠，MySQL自己解释一个，正则表达式库解释另一个
   
 ```sql
-<!--正则匹配 .-->
+/* 正则匹配 . */
 SELECT VEND_NAME
 FROM VENDORS
 WHERE VENDER_NAME REGEXP '\\.'
