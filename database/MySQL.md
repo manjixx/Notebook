@@ -1,3 +1,9 @@
+# MySQL测试方法
+
+- 测试正则表达式
+
+- 测试计算
+
 # 1.了解SQL
 
 - 数据库：保存有组织的数据的容器（通常是一个文件或一组文件）。
@@ -39,7 +45,7 @@
     - 输入 help 或者 \h 获取帮助
     - 输入 quit 或 exit 退出命令行实用工具 
   ```bash
-  <!--完整的命令行选项和参数列表-->
+  --完整的命令行选项和参数列表--
   mysql --help
   ```
   
@@ -49,10 +55,10 @@
 # 3. 使用MySQL
 
 ```SQL
-<!--选择数据库-->
+/*选择数据库*/
 USE Database;
 
-<!--查看允许的SHOW语句-->
+--查看允许的SHOW语句--
 HELP SHOW;
 
 <!--显示数据库列表-->
@@ -398,11 +404,128 @@ ORDER BY VEND_NAME;
   - [:alpha:] 任意字符,同[a-zA-Z]
   - [:blank:] 空格和制表，同[\\t]
   - [:cntrl:] ASCII控制字符(ASCII 0到31 和 127)
-  - [] 
+  - [:digit:] 任意数字(同[0-9])
+  - [:graph:] 与[:print:]相同，但不包括空格
+  - [:lower:] 任意小写字母(同[a-z])
+  - [:print:] 任意可打印字符
+  - [:punct:] 既不在[:alnum:]又不在[:cntrl:]中的任意字符
+  - [:sapce:] 包括空格在内的任意空白字符(同[\\f\\n\\r\\t\\v])
+  - [:upper:] 任意大写字母(同[A-Z])
+  - [:xdigit:] 任意十六进制数字(同[a-fA-F0-9])
 
+## 匹配多个实例
+- 正则表达式重复元字符
+  - *     0个或多个匹配
+  - +     1个或多个匹配,等于{1,}
+  - ?     0个或1个匹配，等于{0,1}
+  - {n}   指定匹配数目
+  - {n,}  不少于指定数目的匹配
+  - {n,m} 匹配数目范围(m不超过255）
+```sql
+/* '\\([0-9] sticks?\\)'
+    \\(     匹配(
+    [0-9]   匹配任意数字
+    sticks? 匹配stick和sticks,因为s后的?表示s可以出现0次或者1次
+    \\)     匹配)
+*/
+SELECT PROD_NAME
+FROM PRODUCTS
+WHERE PROD_NAME REGEXP '\\([0-9] sticks?\\)'
+ORDER BY PROD_NAME;
 
+/*
+  匹配任意4位数字
+  '[[:digit:]]{4}'
+    [:digit:] 匹配任意数字
+    {4} 要求它前面的字符任意数字出现4次
+*/
+SELECT PROD_NAME
+FROM PRODUCTS
+WHERE PROD_NAME REGEXP '[[:digit:]]{4}'
+ORDER BY PROD_NAME;
+
+SELECT PROD_NAME
+FROM PRODUCTS
+WHERE PROD_NAME REGEXP '[0-9][0-9][0-9][0-9]'
+ORDER BY PROD_NAME;
+```
+
+## 定位符
+
+- 为了匹配特定位置的文本，需要使用定位元字符
+  - ^       文本的开始
+  - $       文本的结尾
+  - [[:<:]] 词的开始
+  - [[:>:]] 词的结尾
+
+- ^ 的双重用法：在集合中用来否定该集合(集合用[和]定义)，否则用来指示串的开始。
+
+- 通过使用 ^ 与 $ 可以是REGEXP达到与LIKE一样的效果
+ 
+```sql
+/*匹配以0-9或者.开始商品名*/
+
+SELECT PROD_NAME
+FROM PRODUCTS
+WHERE PROD_NAME REGEXP '^[0-9\\.]'
+ORDER BY PROD_NAME;
+
+```
 # 10. 创建计算字段
 
+## 计算字段
+- 计算字段实际并不存在于数据库表中，计算字段是运行时在SELECT语句内创建的
+
+- 字段(filed)基本上与列(column)的意思相同，经常互换使用，不过数据库列一般称为列，而术语字段通常用在计算字段的连接上
+
+## 拼接字段
+
+- 拼接(concatenate):将值连接在一起构成单个值
+
+- MySQL使用 Concat()函数来拼接两个列
+
+- 注：多数DBMS使用+或||来实现拼接，MySQL则使用Concat()函数来实现
+
+```sql
+/* 拼接供应商(位置)信息*/
+
+SELECT Concat(VENDER_NAME, '(', VENDER_CONTORY ,')')
+FROM VENDORS
+ORDER BY VEND_NAME;
+```
+
+> 分析：Concat(VENDER_NAME, '(' VENDER_CONTORY ')') 连接如下4个元素
+>   - 存储在vend_name列中的名字；
+>   - 包含一个空格和一个左圆括号的串；
+>   -  存储在vend_country列中的国家；
+>   -  包含一个右圆括号的串。
+
+- RTrim()函数去掉值右边的所有空格。通过使用RTrim()，各个列都进行了整理
+- LTrim()函数去掉值左边的所有空格。
+
+- 别名(alias)：是一个字段或值得替换名，别名用关键字AS赋予
+
+```sql
+SELECT Concat(RTrim(VEND_NAME), '(' , RTrim(VEND_COUNTRY), ')') AS VEND_TITLE
+FORM VENDORS
+ORDER BY VEND_NAME;
+```
+
+## 执行算术计算
+```sql
+SELECT PROD_ID,
+       QUANTITY,
+       QUANTITY * ITEM_PRICE AS EXPANDED_PRICE
+FROM ORDERITEMS
+WHERE ORDER_NUM = 20005;
+```
+
+- MySQL计算操作符
+  - + 加
+  - - 减
+  - * 乘
+  - / 除
+    
 # 11. 使用数据处理函数
 
 # 12. 汇总数据
