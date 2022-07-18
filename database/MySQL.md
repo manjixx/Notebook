@@ -579,9 +579,130 @@ ORDER BY vend_name;
 /*soundex*/
 ```
 
-### 
+### 日期和时间处理函数
+
+- 常见的日期和时间处理函数
+  - AddDate()     增加一个日期（天、周等）
+  - AddTime()     增加一个时间（时、分等）
+  - CurDate()     返回当前日期
+  - CurTime()     返回当前时间
+  - Date()        返回日期时间的日期部分
+  - DateDiff()    计算两个日期之差
+  - Date_Add()    高度灵活的日期运算函数
+  - Date_Format() 返回一个格式化的日期或时间串
+  - Day()         返回一个日期的天数部分
+  - DayOfWeek()   对于一个日期，返回对应的星期几
+  - Hour()        返回一个时间的小时部分
+  - Minute()      返回一个时间的分钟部分
+  - Month()       返回一个日期的月份部分
+  - Now()         返回当前日期和时间
+  - Second()      返回一个时间的秒部分
+  - Time()        返回一个日期时间的时间部分
+  - Year()        返回一个日期的年份部分
+
+```sql
+/* 基本日期查询 但该种查询方式不可靠，因为表格中时间值不可能全部是00:00:00 */
+SELECT cust_id,order_num
+FROM ORDERS
+WHERE order_date = '2005-09-01';
+
+/*解决方法：使用Date()函数对日期进行检索*/
+SELECT cust_id,order_num
+FORM ORDERS
+WHERE Date(order_data) = '2005-09-01';
+
+/*查询2005年9月份下的所有订单*/
+
+/*方式一*/
+SELECT cust_id, order_num
+FROM orders
+WHERE Year(order_date) = 2005 AND Month(oreder_data) = 9;
+
+/*方式二*/
+SELECT cust_id, order_num
+FROM orders
+WHERE order_date BETWEEN '2005-09-01' AND '2005-09-30';
+```
+
+### 日期和时间处理函数
+
+- 数字处理函数
+  - Abs() 返回一个数的绝对值
+  - Cos() 返回一个角度的余弦
+  - Exp() 返回一个数的指数值
+  - Mod() 返回除操作的余数
+  - Pi() 返回圆周率
+  - Rand() 返回一个随机数
+  - Sin() 返回一个角度的正弦
+  - Sqrt() 返回一个数的平方根
+  - Tan() 返回一个角度的正切
+ 
 # 12. 汇总数据
 
+- 汇总数据而不用把它们实际检索出来，为此MySQL提供了专门的函数。使用这些函数，MySQL查询可用于检索数据，以便分析和报表生成。这种类型的检索例子有以下几种：
+  - 确定表中行数
+  - 获得表中行组的和
+  - 找出表列的最大值、最小值和平均值
+
+- 聚集函数：运行在行组上，计算和返回单个值的函数
+
+- SQL聚集函数
+  - AVG()   返回某列的平均值
+  - COUNT() 返回某列的行数
+  - MAX()   返回某列的最大值
+  - MIN()   返回某列的最小值
+  - SUM()   返回某列值之和   
+
+## AVG()函数
+
+AVG()通过对表中行数计数并计算特定列值之和，求得该列的平均值。AVG()可用来返回所有列的平均值，也可以用来返回特定列或行的平均值。
+
+```sql
+/*返回所有产品的平均价格*/
+SELECT AVG(prod_price) AS avg_price
+FROM products;
+
+/ *确定特定列或行的平均值*/
+SELECT AVG(prod_price) AS avg_price
+FROM products
+WHERE vend_id = 1003;
+```
+
+- 只用于单个列 AVG()只能用来确定特定数值列的平均值，而且列名必须作为函数参数给出。为了获得多个列的平均值，必须使用多个AVG()函数。
+
+- NULL值 AVG()函数忽略列值为NULL的行
+
+## COUNT()函数
+
+- COUNT()函数可以进行计数，可以确定表中行的数目或者符合特定条件的行的数目
+
+- COUNT()函数有两种使用方式
+  - 使用COUNT(\*) 对表中行的数目进行计数，不管表列中包含的是空值（NULL）还是非空值
+
+  - 使用COUNT(column)对特定列中具有值得行进行计数，忽略NULL值
+  
+```sql
+SELECT COUNT(*) AS num_cust
+FROM customers
+ 
+SELECT COUNT(cust_email) AS num_cust
+FROM customers;
+```
+
+## MAX()函数
+
+- MAX()返回指定列中的最大值，MAX()要求指定列名
+
+```sql
+SELECT MAX(prod_price) AS max_price
+FROM products
+```
+
+- 对非数值数据使用MAX() 虽然MAX()一般用来找出最大的数值或日期值，但MySQL允许将它用来返回任意列中的最大值，包括返回文本列中的最大值。在用于文本数据时，如果数据按相应的列排序，则MAX()返回最后一行
+
+- NULL值 MAX()函数忽略列值为NULL的行
+
+## MIN()函数
 # 13. 分组数据
 
 # 14. 使用子查询
