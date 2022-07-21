@@ -174,6 +174,34 @@ class MyLinkedList {
 
 ## 2.4 翻转链表
 
+### 思路
+
+双指针法
+
+### 代码
+
+```java
+class Solution {
+  public ListNode reverseList(ListNode head) {
+    ListNode pre = null;
+    ListNode cur = head;
+
+    while(cur != null){
+      ListNode temp = cur.next;
+      cur.next = pre;
+      pre = cur;
+      cur = temp;
+    }
+    return pre;
+  }
+}
+
+```
+
+### 复杂度分析
+- 时间复杂度：O(n);
+- 空间复杂度：O(1);
+
 ## 2.5 两两交换链表中的节点
 
 ## 2.6 删除链表的倒数第N个节点
