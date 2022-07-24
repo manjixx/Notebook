@@ -41,21 +41,47 @@
 
 - Java中set 和 map 分别提供以下三种数据结构
 
-# 二.[有效的字母异位词](有效的字母异位词)
+# 二.[有效的字母异位词](https://leetcode.cn/problems/valid-anagram/)
 
-## 题解
+## 思路
 
-### 思路
-- 使用数组
 
-### 代码
+- 使用数组分别记录
+
+
+##  代码
 ```java
+class Solution {
+    public boolean isAnagram(String s, String t) {
+    
+        int[] array = new int[26];
+        
+        for(int i = 0;i < s.length();i++){
+            int index = s.charAt(i) - 'a';
+            array[index]++;
+        }
+        
+        for(int i = 0;i < t.length();i++){
+            int index = t.charAt(i) - 'a';
+            array[index]--;
+        }
+        
+        for(int a: array){
+            if(a != 0){
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+}
 
 ```
 
 ### 复杂度分析
   - 时间复杂度:O(n);
-  - 空间复杂度:O(n)
+  - 空间复杂度:O(n).
 
 ## 其他题目
 [赎金信](https://leetcode.cn/problems/ransom-note/)
