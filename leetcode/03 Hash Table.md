@@ -84,7 +84,9 @@ class Solution {
   - 空间复杂度:O(n).
 
 ## 其他题目
-[赎金信](https://leetcode.cn/problems/ransom-note/)
+[383. 赎金信](https://leetcode.cn/problems/ransom-note/)
+[49.字母异位词分组](https://leetcode.cn/problems/group-anagrams/)
+[438.找到字符串中所有字母异位词](https://leetcode.cn/problems/find-all-anagrams-in-a-string/)
 
 # 三、[两个数组的交集](https://leetcode.cn/problems/intersection-of-two-arrays/)
 
