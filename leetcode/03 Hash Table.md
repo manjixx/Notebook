@@ -43,13 +43,13 @@
 
 # 二.[有效的字母异位词](https://leetcode.cn/problems/valid-anagram/)
 
-## 思路
+## 1.思路
 
 
 - 使用数组分别记录
 
 
-##  代码
+## 2.代码
 ```java
 class Solution {
     public boolean isAnagram(String s, String t) {
@@ -79,18 +79,18 @@ class Solution {
 
 ```
 
-### 复杂度分析
+## 3.复杂度分析
   - 时间复杂度:O(n);
   - 空间复杂度:O(n).
 
-## 其他题目
+## 4.其他题目
 [383. 赎金信](https://leetcode.cn/problems/ransom-note/)
 [49.字母异位词分组](https://leetcode.cn/problems/group-anagrams/)
 [438.找到字符串中所有字母异位词](https://leetcode.cn/problems/find-all-anagrams-in-a-string/)
 
 # 三、[两个数组的交集](https://leetcode.cn/problems/intersection-of-two-arrays/)
 
-## 思路
+## 1.思路
 
 利用两个哈希集合，进行重复值判断，其中一个用来存放数组1中的出现的值，第二个用来存放结果，
 
@@ -106,7 +106,7 @@ for(int num : nums2){
 )
 ```
 
-## 代码
+## 2.代码
 ```java
 class Solution {
     public int[] intersection(int[] nums1, int[] nums2) {
@@ -130,11 +130,11 @@ class Solution {
 )
 ```
 
-## 复杂度分析
+## 3.复杂度分析
 - 时间复杂度:O(n);
 - 空间复杂度:O(n);
 
-## [相似题目-两个数组的交集II](https://leetcode.cn/problems/intersection-of-two-arrays-ii/)
+## 4.[相似题目-两个数组的交集II](https://leetcode.cn/problems/intersection-of-two-arrays-ii/)
 - 思路：
   - 利用哈希映射去统计长度较短数组中元素出现次数
   - 循环遍历长度较长的数组中元素，如果HashMap中元素数量大于0，则将该数字加入结果数组中，并对hashMap中元素个数进行处理。
