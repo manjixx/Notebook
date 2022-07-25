@@ -172,5 +172,17 @@ class Solution {
         return Arrays.copyOfRange(ans,0,index);
     }
 }
-
 ```
+- 复杂度分析
+  - 时间复杂度:O(N) 
+  - 空间复杂度:O(N)
+
+# [4 快乐数](https://leetcode.cn/problems/happy-number/)
+
+## 思路
+
+## 代码
+
+## 复杂度分析
+- 空间复杂度:O(1)
+- 时间复杂度:O(logn)
