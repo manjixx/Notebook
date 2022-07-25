@@ -177,7 +177,7 @@ class Solution {
   - 时间复杂度:O(N) 
   - 空间复杂度:O(N)
 
-# [4 快乐数](https://leetcode.cn/problems/happy-number/)
+# [四.快乐数](https://leetcode.cn/problems/happy-number/)
 
 ## 思路
 
@@ -186,3 +186,8 @@ class Solution {
 ## 复杂度分析
 - 空间复杂度:O(1)
 - 时间复杂度:O(logn)
+
+# [五.两数之和](https://leetcode.cn/problems/two-sum/)
+
+# [六.四数相加](https://leetcode.cn/problems/4sum-ii/)
+
