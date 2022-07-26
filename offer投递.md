@@ -15,3 +15,8 @@
 - 2020-07-24
 - [后端开发-武汉](https://app.mokahr.com/campus_apply/megviihr/38642?recommendCode=DShXMCtu#/job/499789ea-12eb-4acf-a9f2-8f665c6254a9)
 - [应聘进展](https://app.mokahr.com/campus_apply/megviihr/38642?recommendCode=DShXMCtu#/candidateHome/applications)
+
+## 字节跳动
+- 2020-07-27
+- [基础架构开发-西安](https://jobs.bytedance.com/campus/position/7116441857323862285/detail?utm_device=pc&utm_keyword=20220074&utm_source=SEMbaidu)
+- [应聘进展](https://jobs.bytedance.com/campus/position/application?utm_source=SEMbaidu&utm_device=pc&utm_keyword=20220074)
