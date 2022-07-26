@@ -84,9 +84,15 @@ class Solution {
   - 空间复杂度:O(n).
 
 ## 4.其他题目
-[383. 赎金信](https://leetcode.cn/problems/ransom-note/)
-[49.字母异位词分组](https://leetcode.cn/problems/group-anagrams/)
-[438.找到字符串中所有字母异位词](https://leetcode.cn/problems/find-all-anagrams-in-a-string/)
+### [383. 赎金信](https://leetcode.cn/problems/ransom-note/)
+
+### [49.字母异位词分组](https://leetcode.cn/problems/group-anagrams/)
+
+- 思路
+ 
+ 将每个出现次数大于 0 的字母和出现次数按顺序拼接成字符串，作为哈希表的键
+
+### [438.找到字符串中所有字母异位词](https://leetcode.cn/problems/find-all-anagrams-in-a-string/)
 
 # 三、[两个数组的交集](https://leetcode.cn/problems/intersection-of-two-arrays/)
 
