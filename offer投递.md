@@ -20,3 +20,8 @@
 - 2020-07-27
 - [基础架构开发-西安](https://jobs.bytedance.com/campus/position/7116441857323862285/detail?utm_device=pc&utm_keyword=20220074&utm_source=SEMbaidu)
 - [应聘进展](https://jobs.bytedance.com/campus/position/application?utm_source=SEMbaidu&utm_device=pc&utm_keyword=20220074)
+
+## 大疆
+- 2022-07-27
+- [后端开发-深圳](https://we.dji.com/zh-CN/position/detail?positionId=1544301441987375104)
+- [应聘进展](https://we.dji.com/zh-CN/position/process)
