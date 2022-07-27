@@ -84,7 +84,7 @@ class Solution {
   - 空间复杂度:O(n).
 
 ## 4.其他题目
-### [383. 赎金信](https://leetcode.cn/problems/ransom-note/)
+
 
 ### [49.字母异位词分组](https://leetcode.cn/problems/group-anagrams/)
 
@@ -195,5 +195,144 @@ class Solution {
 
 # [五.两数之和](https://leetcode.cn/problems/two-sum/)
 
+## 思路
+
+使用HashMap，其中key：nums[i],value:i，判断map中是否含有 target-将当前元素值，如果存在则返回，否则将当前nums[i]与i暂存至map
+
+```java
+if(map.containsKey(target - nums[i])){
+  int index = map.get(target - nums[i]);
+  ans[0] = index;
+  ans[1] = i;
+  break;
+}else{
+  map.put(nums[i],i);
+}
+```
+
+## 代码
+
+```java
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+
+        Map<Integer,Integer> map = new HashMap<Integer,Integer>();
+
+        int[] ans = new int[2];
+
+        for(int i = 0;i < nums.length;i++){
+            if(map.containsKey(target - nums[i])){
+                int index = map.get(target - nums[i]);
+                ans[0] = index;
+                ans[1] = i;
+                break;
+            }
+            map.put(nums[i],i);
+        }
+
+        return ans;
+    }
+}
+```
+
+## 复杂度分析
+
+- 时间复杂度：O(n)
+- 空间复杂度：O(n)
+
 # [六.四数相加](https://leetcode.cn/problems/4sum-ii/)
 
+## 思路
+该题解题步骤如下：
+- 定义一个HashMap，Key存放数组A元素a与数组B元素b两数之和a + b，Value存放a + b出现次数；
+- 遍历数组A与B，并将结果存入HashMap中
+- 定义一个变量count用于统计a+b+c+d=0的次数
+- 循环遍历数组C和数组D，判断${0 - (c + d)}$是否在map中出现过，如果出现过，就讲对应的value取出来计入count中
+- 返回统计值count
+
+## 代码
+```java
+public int fourSumCount(int[] nums1, int[] nums2, int[] nums3, int[] nums4) {
+
+        Map<Integer,Integer> map = new HashMap<Integer,Integer>();
+
+        for(int a : nums1){
+            for(int b : nums2){
+                int sum = a + b;
+                int c = map.getOrDefault(sum,0) + 1;
+                map.put(sum,c);
+            }
+        }
+
+        int count = 0;
+
+        for(int c : nums3){
+            for(int d : nums4){
+                int sum = c + d;
+                if(map.containsKey(0 - sum)){
+                   count += map.get(0 - sum); 
+                }
+            }
+        }
+
+        return count;
+    }
+```
+## 复杂度分析
+
+- 时间复杂度:${O(n^2)}$
+- 空间复杂度:${O(n^2}$
+
+# [赎金信](https://leetcode.cn/problems/ransom-note/)
+
+## 思路
+
+- 首先判断magazine字符串长度是否小于ransomNote，因为magazine中字符只能使用一次，因此若magazine长度小于ransomNote，那ransomNote必然不能有magazine构成
+- 利用数组统计magazine中各个字母出现的次数
+- 遍历ransomNote，其中字母出现一次从数组中减去一次
+- 遍历数组，查看数组中是否有< 0的值，如果小于0则说明magazine中字母无法构成ransomNote
+
+## 代码
+```java
+class Solution {
+    public boolean canConstruct(String ransomNote, String magazine) {
+		int r = ransomNote.length();
+		int m = magazine.length();
+		
+		if(r > m){
+			return false;
+		}
+		
+		int[] arr = new int[26];
+		
+		for(int i = 0;i < m;i++){
+			int index = magazine.charAt(i) - 'a';
+			arr[index]++;
+		}
+		
+		for(int i = 0;i < r;i++){
+			int index = ransomNote.charAt(i) - 'a';
+			arr[index]--;
+		}
+		
+		for(int i = 0;i < 26;i++){
+			if(arr[i] < 0){
+				return false;
+			}	
+		}
+		
+		return true;
+    }
+}
+
+```
+
+## 复杂度分析
+- 时间复杂度:${O(n)}$
+- 空间复杂度:${O(∣S∣)}$,S 是字符集，这道题中 SS 为全部小写英语字母，因此 |S| = 26∣S∣=26。
+
+# [三数之和](https://leetcode.cn/problems/3sum/)
+
+# [四数之和](https://leetcode.cn/problems/4sum/)
+
+四数之和，和15.三数之和 (opens new window)是一个思路，都是使用双指针法, 基本解法就是在15.三数之和 (opens new window)的基础上再套一层for循环。
