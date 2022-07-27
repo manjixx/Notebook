@@ -30,6 +30,6 @@ Apache服务器是毫无争议的世界第一大服务器，其具备：稳定�
 
 
 # 参考链接
-[](https://zhuanlan.zhihu.com/p/34943332)
-[](https://mp.weixin.qq.com/s/XoqGvYBabW8YBl9xEeNYZw)
-[](https://github.com/dunwu/nginx-tutorial)
+[知乎](https://zhuanlan.zhihu.com/p/34943332)
+[微信](https://mp.weixin.qq.com/s/XoqGvYBabW8YBl9xEeNYZw)
+[Nginx极简教程](https://github.com/dunwu/nginx-tutorial)
