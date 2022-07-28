@@ -697,3 +697,61 @@ http {
 
 ```
 
+### 03 网站有多个webapp的配置
+
+当一个网站功能越来越丰富时，往往需要将一些功能相对独立的模块剥离出来，独立维护。这样的话，通常，会有多个 webapp。
+
+> 场景举例
+
+假设 www.helloworld.com 站点有好几个 webapp，finance（金融）、product（产品）、admin（用户中心）。访问这些应用的方式通过上下文(context)来进行区分:
+
+- www.helloworld.com/finance/
+
+- www.helloworld.com/product/
+
+- www.helloworld.com/admin/
+
+http 的默认端口号是 80，如果在一台服务器上同时启动这 3 个 webapp 应用，都用 80 端口，肯定是不成的。所以，**这三个应用需要分别绑定不同的端口号**。
+
+但是用户在请求www.helloworld.com 站点时，需要访问不同 webapp，应使用统一的端口号，因此需要使用反向代理来做处理。
+
+> 网站有多个webapp的nginx配置
+```shell
+http {
+	#此处省略一些基本配置
+
+	upstream product_server{
+		server www.helloworld.com:8081;
+	}
+
+	upstream admin_server{
+		server www.helloworld.com:8082;
+	}
+
+	upstream finance_server{
+		server www.helloworld.com:8083;
+	}
+
+	server {
+		#此处省略一些基本配置
+		#默认指向product的server
+		location / {
+			proxy_pass http://product_server;
+		}
+
+		location /product/{
+			proxy_pass http://product_server;
+		}
+
+		location /admin/ {
+			proxy_pass http://admin_server;
+		}
+
+		location /finance/ {
+			proxy_pass http://finance_server;
+		}
+	}
+}
+```
+
+
