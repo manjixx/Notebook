@@ -1,5 +1,13 @@
 # 一、哈希表理论基础
 
+## 0. 总结
+
+## 数组作为哈希表
+
+## set作为哈希表
+
+## map作为哈希表
+
 ## 1. 哈希表
 
 - 哈希表(Hash Table):又称散列表，数组就是一个典型的哈希表
@@ -336,3 +344,44 @@ class Solution {
 # [四数之和](https://leetcode.cn/problems/4sum/)
 
 四数之和，和15.三数之和 (opens new window)是一个思路，都是使用双指针法, 基本解法就是在15.三数之和 (opens new window)的基础上再套一层for循环。
+
+需要注意的是每一层循环中的剪枝处理
+```java
+// 第一层剪枝
+if(i > 0 && nums[i] == nums[i - 1]){
+                continue;
+}
+
+if((long) nums[i] + nums[i + 1] + nums[i + 2] + nums[i + 3] > target){
+break;
+}
+
+if((long) nums[i] + nums[l - 1] + nums[l - 2] + nums[l - 3] < target){
+continue;
+}
+
+// 第二层循环剪枝
+
+if(j > i + 1 && nums[j] == nums[j - 1]){
+    continue;
+}
+
+if((long) nums[i] + nums[j] + nums[j + 1] + nums[j + 2] > target){
+    break;
+}
+
+if((long) nums[i] + nums[j] + nums[l - 1] + nums[l - 2] < target){
+    continue;
+}
+
+// 注意下两式中的强制类型转换
+(long) nums[i] + nums[j] + nums[l - 1] + nums[l - 2] < target;
+(long) (nums[i] + nums[j] + nums[l - 1] + nums[l - 2]) < target;
+
+```
+
+## 代码
+
+## 复杂度分析
+- 时间复杂度:${O(n^3}$
+- 空间复杂度:O(logn)，其中 n 是数组的长度。空间复杂度主要取决于排序额外使用的空间。此外排序修改了输入数组nums，实际情况中不一定允许，因此也可以看成使用了一个额外的数组存储了数组 nums 的副本并排序，空间复杂度为 O(n)。
