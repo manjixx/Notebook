@@ -155,7 +155,7 @@ Queue是单端队列，遵循(FIFO)先进先出原则，最早进去的最先出
   }
 ```
 
-*** 
+***
 
 # 二、 用栈实现队列
 
@@ -165,9 +165,9 @@ Queue是单端队列，遵循(FIFO)先进先出原则，最早进去的最先出
 
 > **复杂度分析**
 
-*** 
+***
 
-#  三、用队列实现栈
+# 三、用队列实现栈
 
 > **思路**
 **原始思路**
@@ -235,7 +235,7 @@ class MyStack {
 - 时间复杂度:入栈操作 O(n)，其余操作都是 O(1)，其中 nn 是栈内的元素个数。
 - 空间复杂度:O(n)，其中 n 是栈内的元素个数。需要使用两个队列存储栈内的元素。
 
-*** 
+***
 
 # 四、[有效的括号](https://leetcode.cn/problems/valid-parentheses/)
 
@@ -249,7 +249,7 @@ class MyStack {
   
   - 如果栈为空，或者栈中右括弧与遇到的左括弧对应的右括弧不匹配 则返回false
   
-  -  如果栈中的右括弧与遇到的字符串中的左括弧匹配则移除 
+  - 如果栈中的右括弧与遇到的字符串中的左括弧匹配则移除
 
 > **代码**
 
@@ -406,4 +406,227 @@ class Solution {
 
 - 空间复杂度:O(n);
 - 时间复杂度:O(n);
+
+***
+
+# 七、滑动窗口最大值
+
+## 7.1 思路一：单调队列
+
+*最近接触到一种挺有意思的数据结构——单调队列，可以用来维护（给定大小的）区间的最值，其时间复杂度为O(n)，其中n为序列的元素个数。*
+
+[单调队列详解](https://www.cnblogs.com/I-Love-You-520/p/13454305.html)
+
+[单调队列详解-简书](https://www.jianshu.com/p/e59d51e1eef5)
+
+> **思路**
+
+单调队列：单调递减或单调递增的队列
+
+- 单调递增队列：保证队列头元素一定是当前队列的最小值，用于维护区间的最小值
+  
+- 单调递减队列：保证队列头元素一定是当前队列的最大值，用于维护区间的最大值。
+
+**设计单调队列时应遵循如下规则**
+
+- push(vlaue): 如果 push的value > **入口元素**，那么**就将队列入口的元素弹出**，直到value <= 入口元素的数值为止
+- pop(value):如果窗口移除的元素value=**单调队列的出口元素**，那么队列弹出元素，否则不用任何操作
+
+保持如上规则，每次窗口移动的时候，只要问que.front()就可以返回当前窗口的最大值。
+
+![单调队列的实现](https://code-thinking.cdn.bcebos.com/gifs/239.%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%80%E5%A4%A7%E5%80%BC.gif)
+
+**实现流程(即设计时需要实现的规则)**
+
+- 去尾操作 ：队尾元素出队列。当队列有新元素待入队，需要从队尾开始，删除影响队列单调性的元素，维护队列的单调性。(删除一个队尾元素后，就重新判断新的队尾元素)，去尾操作结束后，将该新元素入队列。
+  
+- 删头操作 ：队头元素出队列。判断队头元素是否在待求解的区间之内，如果不在，就将其删除。（这个很好理解呀，因为单调队列的队头元素就是待求解区间的极值）
+  
+- 取解操作 ：经过上面两个操作，取出 队列的头元素 ，就是 当前区间的极值 。
+
+**结合题目的使用示例**
+
+![使用示例](https://code-thinking.cdn.bcebos.com/gifs/239.%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%9C%80%E5%A4%A7%E5%80%BC-2.gif)
+
+**实现代码**
+
+```java
+class MyQueue {
+    Deque<Integer> deque = new LinkedList<Integer>();
+
+    /**弹出元素时，需要判断当前队列是否为空 以及 要弹出的数值是否等于队列出口的数值 */
+    
+    void poll(int val){
+        if(!deque.isEmpty() && val = deque.peek()){
+            deque.poll();
+        }
+    }
+    /**
+        添加元素时，如果要添加的元素大于入口处的元素，就将入口元素弹出
+        保证队列元素单调递减
+        比如此时队列元素3,1，2将要入队，比1大，所以1弹出，此时队列：3,2
+     */
+
+    void add(int val){
+        while(!deque.isEmpty() && val > deque.getLast()){
+            deque.removeLast();
+        }
+        deque.add(val);
+    }
+
+    void peek(){
+        return deque.peek();
+    }
+}
+```
+
+> **代码**
+
+```java
+class Solution {
+    public int[] maxSlidingWindow(int[] nums, int k) {
+
+        if(nums.length == 1){
+            return nums;
+        }
+
+        MonotonicQueue mqueue = new MonotonicQueue();
+
+        int[] ans = new int[nums.length - k + 1];
+
+        int index = 0;
+
+        for(int i = 0;i < k;i++){
+            mqueue.add(nums[i]);
+        }
+        ans[index++] = mqueue.peek();
+
+        for(int i = k;i < nums.length;i++){
+            mqueue.poll(nums[i - k]);
+            mqueue.add(nums[i]);
+            ans[index++] = mqueue.peek();
+        }
+        return ans;
+    }
+}
+
+class MonotonicQueue{
+    Deque<Integer> deque = new LinkedList<Integer>();
+
+    /**
+        如果队列不为空，且队列头部元素= val，则将元素弹出；
+     */
+    public void poll(int val){
+        if(!deque.isEmpty() && val ==  deque.getFirst()){
+            deque.removeFirst()
+        }
+    }
+
+    /**
+        队列不为空，且队尾元素 < val ，则移除这些元素，直至队尾元素 〈 val
+        将val加入队列
+     */
+
+    public void add(int val){
+        while(!deque.isEmpty() && val >= deque.getLast()){
+            deque.removeLast()
+        }
+        deque.add(val);
+    }
+
+    public int peek(){
+        return deque.peek();
+    }
+}
+```
+
+> **复杂度分析**
+
+- 时间复杂度:O(n)
+  
+- 空间复杂度:O(k)。与方法一不同的是，在方法二中我们使用的数据结构是双向的，因此「不断从队首弹出元素」保证了队列中最多不会有超过 k+1 个元素，因此队列使用的空间为O(k)。
+
+***
+
+# 八、[前 K 个高频元素](https://leetcode.cn/problems/top-k-frequent-elements/submissions/)
+
+## 8.1 思路一
+
+*然后是对频率进行排序，这里我们可以使用一种 容器适配器就是优先级队列。*
+
+> **思路**
+
+本题涉及如下三个内容：
+
+- 统计元素出现频率-map
+  
+- 对元素进行排序-优先级队列
+  
+- 找出前k个高频元素
+
+
+**优先级队列**
+
+[Java中优先级队列接口](https://blog.csdn.net/hellokitty136/article/details/105831884)
+
+**解题思路**
+
+**此处使用小顶堆，因为要统计最大前k个元素，只有小顶堆每次将最小的元素弹出，最后小顶堆里积累的才是前k个最大元素**
+
+建立一个小顶堆，然后遍历「出现次数数组」：
+
+- 如果堆的元素个数小于 k，就可以直接插入堆中。
+- 如果堆的元素个数等于 k，则检查堆顶与当前出现次数的大小。如果堆顶更大，说明至少有 k 个数字的出现次数比当前值大，故舍弃当前值；否则，就弹出堆顶，并将当前值插入堆中。
+
+
+![解题思路](https://code-thinking.cdn.bcebos.com/pics/347.%E5%89%8DK%E4%B8%AA%E9%AB%98%E9%A2%91%E5%85%83%E7%B4%A0.jpg)
+
+> **代码**
+
+```java
+class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        Map<Integer,Integer> map = new HashMap<Integer,Integer>();
+
+        for(int num : nums){
+            map.put(num,map.getOrDefault(num,0) + 1);
+        } 
+
+        Comparator<int[]> comparator = new Comparator<int[]>(){
+            public int compare(int[] m,int[] n){
+                return m[1] - n[1];
+            }
+        };
+
+        PriorityQueue<int[]> queue = new PriorityQueue<int[]>(comparator);
+
+        Set<Map.Entry<Integer,Integer>> entries =  map.entrySet();
+
+        for(Map.Entry<Integer,Integer> entry:entries){
+            int num = entry.getKey();
+            int count = entry.getValue();
+
+            if(queue.size() == k){
+                if(queue.peek()[1] < count){
+                    queue.poll();
+                    queue.add(new int[]{num,count});
+                }
+            }else{
+                queue.add(new int[]{num,count});
+            }
+        }
+
+        int[] ans = new int[k];
+
+        for(int i = 0;i < k;i++){
+            ans[i] = queue.poll()[0];
+        }
+
+        return ans;
+    }
+}
+```
+
+> **复杂度分析**
+
 
