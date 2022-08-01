@@ -630,3 +630,6 @@ class Solution {
 > **复杂度分析**
 
 
+# 九、[数组中第k大个元素](https://leetcode.cn/problems/kth-largest-element-in-an-array/solution/)
+
+> 本题目为前k大个元素的相似题型，因为是堆的经典例题，所以单列出来
