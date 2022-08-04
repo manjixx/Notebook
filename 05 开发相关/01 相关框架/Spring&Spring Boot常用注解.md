@@ -946,3 +946,47 @@ public abstract class TestBase {
         ......
     }
 ```
+
+# 二、使用笔记
+
+## 2.1 `produces`在`@requestMapping`中的使用方式和作用
+
+> **基本概念**
+`produces`可能不算是一个注解，它是注解@requestMapping注解里面的属性项，它的作用是指定返回值类型，不但可以设置返回值类型还可以设定返回值的字符编码；
+
+还有一个属性与其对应，就是`consumes`： 指定处理请求的提交内容类型（Content-Type），例如application/json, text/html;
+
+> **produces案例**
+
+produces第一种使用，返回json数据，下边的代码可以省略produces属性，因为我们已经使用了注解@responseBody就是返回值是json数据：
+
+```JAVA
+@Controller  
+@RequestMapping(value = "/pets/{petId}", method = RequestMethod.GET, produces="application/json")  
+@ResponseBody  
+public Pet getPet(@PathVariable String petId, Model model) {     
+    // implementation omitted  
+}  
+```
+produces第二种使用，返回json数据的字符编码为utf-8:
+
+```java
+@Controller  
+@RequestMapping(value = "/pets/{petId}", produces="MediaType.APPLICATION_JSON_VALUE"+";charset=utf-8")  
+@ResponseBody  
+public Pet getPet(@PathVariable String petId, Model model) {      
+    // implementation omitted  
+}  
+```
+
+> **consumes的案例**
+
+方法仅处理request Content-Type为“application/json”类型的请求
+
+```java
+@Controller  
+@RequestMapping(value = "/pets", method = RequestMethod.POST, consumes="application/json")  
+public void addPet(@RequestBody Pet pet, Model model) {      
+    // implementation omitted  
+} 
+```
