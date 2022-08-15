@@ -54,10 +54,58 @@ MyBatis专注于SQL本身，是一个足够灵活的DAO层解决方案。对性�
   -  Hibernate 是一个强大、方便、高效、复杂、间接、全自动化的持久层框架。
 
 # 二、Mybatis解析和运行原理
-> **Mybatis工作原理**
 
-![Mybatis工作流程](https://segmentfault.com/img/bVbMnUc)
-> **Mybatis功能架构**
+## 2.1 Mybatis工作原理
+
+### Mybatis编译步骤主要包括如下5步：
+- 1.构造会话工厂SqlSessionFactory
+- 2.通过SqlSessionFactory创建会话对象SqlSession
+- 3.通过SqlSession执行数据库操作
+- 4.通过调用session.commit()提交事务
+- 5.通过session.close()关闭会话
+
+### Mybatis工作原理
+
+如下图所示为Mybatis工作原理：
+
+![Mybatis工作原理](https://segmentfault.com/img/bVbMnUc)
+
+- **读取Mybatis配置文件：**  mybatis-config.xml 为 MyBatis 的全局配置文件，配置了 MyBatis 的运行环境等信息，例如数据库连接信息
+- 加载映射文件：映射文件即SQL映射文件，该文件中配置了操作数据库的SQL语句，需要在Mybatis配置文件中加载。**Mybatis配置文件可以加载多个映射文件，每个文件对应数据库中的一张表**。
+- **构造会话工厂：** 通过 MyBatis 的环境等配置信息构建会话工厂 SqlSessionFactory。
+- 创建会话对象：由会话工厂创建 SqlSession 对象，该对象中包含了执行 SQL 语句的所有方法。
+- **Executor 执行器：** MyBatis 底层定义了一个 Executor 接口来操作数据库，它将根据 SqlSession 传递的参数动态地生成需要执行的 `SQL` 语句，同时负责查询缓存的维护。
+- **MappedStatement对象:** 在`Executor`接口的执行方法中有一个`MappedStatement`类型的参数，该参数是对映射信息的封装，用于存储要映射的`SQL`语句的 id、参数等信息。
+- **输入参数映射：** 输入参数类型可以是 Map、List 等集合类型，也可以是基本数据类型和 POJO 类型。输入参数映射过程类似于 JDBC 对 preparedStatement 对象设置参数的过程。
+- **输出结果映射：** 输出结果类型可以是 Map、 List 等集合类型，也可以是基本数据类型 和 POJO 类型。输出结果映射过程类似于 JDBC 对结果集的解析过程。
+
+### 常见问题
+
+> **什么是预编译，为什么需要预编译**
+
+SQL预编译是指数据库驱动在发送SQL语句和参数给DBMS之前对SQL语句进行编译，这样DBMS执行SQL时，就不需要重新编译
+
+**预编译可以优化SQL的执行：**
+- 预编译之后的 SQL 多数情况下可以直接执行，DBMS 不需要再次编译；
+- 越复杂的SQL，编译的复杂度将越大，预编译阶段可以合并多次操作为一个操作；
+- 预编译语句对象可以重复利用。把一个 SQL预编译后产生的 PreparedStatement 对象缓 存下来，下次对于同一个SQL，可以直接使用这个缓存的PreparedState 对象。
+
+
+> ** Mybatis都有哪些Executor执行器，它们之间区别是什么？**
+
+Mybatis有三种基本的Executor执行器，`SimpleExecutor`、`ReuseExecutor`、 `BatchExecutor`。
+
+- **SimpleExecutor：** 默认的执行器，对每条sql语句进行预编译、设置参数、执行等操作。每执行一次update或select，就开启一个Statement对象，用完立刻关闭Statement对象；
+- **ReuseExecutor：** REUSE 执行器会重用预处理语句 （prepared statements）。执行update或select，以sql作为key查找Statement对象，存在就使用，不存在就创建，用完后，不关闭Statement对象，而是放置于Map内，供下一次使用；
+- **BatchExecutor：** 批量执行器，执行update（没有select，JDBC批处理不支持select），将所有sql都添加到批处理中（addBatch()），等待统一执行（executeBatch()），它缓存了多个Statement对象，每个Statement对象都是addBatch()完毕后，等待逐一执行executeBatch()批处理。与JDBC批处理相同。
+
+- **作用范围：** Executor的这些特点，都严格限制在SqlSession生命周期范围内。
+
+> **Mybatis如何指定使用哪一种Executor执行器？**
+
+- 在Mybatis配置文件中，可以指定默认的ExecutorType执行器类型
+- 手动给DefaultSqlSessionFactory的创建SqlSession的方法传递ExecutorType类型参数
+## 2.2 Mybatis功能架构
 
 - **API接口层：** 提供给外部使用的接口API，开发人员通过这些本地API来操纵数据库。接口层一接收到调用请求就会调用数据处理层来完成具体的数据处理。
 - **数据处理层：** 负责具体的SQL查找、SQL解析、SQL执行和执行结果映射处理等。它主要的目的是根据调用的请求完成一次数据库操作。
@@ -69,3 +117,6 @@ MyBatis专注于SQL本身，是一个足够灵活的DAO层解决方案。对性�
 
 # 四、Mybatis 缓存
 
+# 五、参考链接
+[Mybatis教程](https://www.cnblogs.com/diffx/p/10611082.html)
+[Mybatis教程](https://blog.csdn.net/wanglei19891210/article/details/105653841)
