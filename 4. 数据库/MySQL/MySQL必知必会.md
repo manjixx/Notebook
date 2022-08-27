@@ -488,6 +488,7 @@ WHERE PROD_NAME REGEXP '^[0-9\\.]'
 ORDER BY PROD_NAME;
 
 ```
+
 # 10. 创建计算字段
 
 ## 计算字段
@@ -703,6 +704,7 @@ FROM products
 - NULL值 MAX()函数忽略列值为NULL的行
 
 ## MIN()函数
+
 # 13. 分组数据
 
 # 14. 使用子查询
@@ -738,3 +740,5 @@ FROM products
 # 29. 数据库维护
 
 # 30. 改善性能
+
+[设计数据密集型应用 - 中文翻译](https://github.com/Vonng/ddia)
