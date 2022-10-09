@@ -332,7 +332,7 @@ xv6-riscv 目录下有 .gdbinit 配置 有的情况下 riscv64-unknown-elf-gdb �
 
 > ## 参考
 
-[MIT 6.S081/Fall 2020 搭建risc-v与xv6开发调试环境](https://yaoyao.io/views/post/MIT6S081-install-riscv-qemu-xv6.html#%E6%88%91%E7%9A%84%E7%8E%AF%E5%A2%83)
+[MIT 6.S081/Fall 2020 搭建risc-v与xv6开发调试环境](https://yaoyao.io/posts/202111/mit6s081-install-riscv-qemu-xv6.html)
 
 ---
 
