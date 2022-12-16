@@ -373,8 +373,7 @@ public:
     complex& operator += (const complex&);
     double real () const {return re;}
     double imag () const {reutn im;}
-private:
-    double re, im;
+private:  re, im;
 
     friend complex& __doapl (complex*, const complex&);
 };
@@ -701,16 +700,27 @@ complex::operator += (const complex& r)
 
 ## 五、操作符重载与临时对象
 
-operator overloading(操作符重载-1，成员函数) this
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-nG0pg0uM-1634388013107)(https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——操作符重载之成员函数.png?raw=true)]
+C++里操作符本质上是一种函数
 
-return by reference语法分析
-传递者无需知道接受者是以reference形式接收。
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-M8KAu1oQ-1634388013110)(https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——返回引用语法分析.png?raw=true)]
+> **operator overloading(操作符重载-1，成员函数) this**
 
-【注】return *ths; 接收端是complex&，不矛盾。
+所有成员函数都带一个隐藏的参数，即字符本身用`this`表示
 
-class body外的各种定义(definitions)
+![](https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——操作符重载之成员函数.png?raw=true)
+
+> **`return by reference`语法分析**
+
+传递者无需知道接收者是以reference形式接收。
+
+![](https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——返回引用语法分析.png?raw=true)
+
+右下角框框里的代码使得我们设计类的时返回值可以是`void`，右方框里的连加表达式则使得返回值不能是`void`。？
+
+【注】`return *ths`; 接收端是`complex&`，不矛盾。
+
+> **class body外的各种定义(definitions)**
+
+```c++
 inline double
 imag(const complex& x)
 {
@@ -722,45 +732,115 @@ real(const complex& x)
 {
     return x.real ();
 }
+```
 
-使用：
+**使用：**
 
+```c++
 {
     complex c1(2,1);
 
     cout << imag(c1);
     cout << real(c1);
 }
+```
 
-operator overloading(操作符重载-2，非成员函数)(无this)
-为了应对client的三种可能用法，这儿对应开发三个函数。
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-9UXGdUtC-1634388013114)(https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——操作符重载之非成员函数.png?raw=true)]
+> **operator overloading(操作符重载-2，非成员函数)(无this)**
 
-temp object(临时对象) typename();
-上图complex这些函数绝不可return by reference,因为它们返回的必定是个local object。
+为了应对`client`的三种可能用法，对应开发三个函数。
+
+![](https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——操作符重载之非成员函数.png?raw=true)
+
+上图`complex`这些函数绝不可`return by reference`,因为它们返回的必定是个`local object`。
+
+> **temp object(临时对象): typename()**
+
+```c++
+inline complex
+operator + (const complex& x, const complex& y){
+    return complex(real(x) + real(y),imag(x) + imag(y));// 临时对象
+}
+
+inline complex
+operator + (const complex& x, const complex& y){
+    return complex(real(x) + y,imag(x));
+}
+inline complex
+operator + (const complex& x, const complex& y){
+    return complex(x + real(y), imag(y));
+}
+```
+
+```c++
+int(7); // 临时对象
+
+complex c1(2,1);
+complex c2;
+complex();
+complex(4,5);
+cout << complex(2); 
+```
+
+> **`class body`之外的各种定义(definitions)**
+
+这个函数绝对不能`retrun by reference`，因为其返回的必定是`local object` 。
+
+```c++
+inline complex
+operator + (const complex& x){
+    return x;
+}
+
+inline complex
+operator - (const complex& x){
+    return complex(-real(x), -imag(x));
+}
+```
+
+```c++
+complex c1(2,1)
+complex c2;
+cout << -c1;
+cout << +c1
+```
+
+## 六、复习Complex类的实现
+
+参考库文件`complex.h`和`complex__test.class`
 
 ## 七、三大函数：拷贝构造，拷贝复制，析构
 
-Class without pointer member(s)
-complex
-Class with pointer member(s)
-string
-String class
-string-test.cpp
+- Class without pointer member(s)：complex
+- Class with pointer member(s)：string
 
+> **String class**
+
+如果编写类的时候没有写拷贝构造与拷贝赋值函数，那么编译器会自动提供。
+
+complex类因为没有指针，使用编译器提供的拷贝构造与拷贝赋值函数即可完成实部与虚部的复制；
+String类因为使用指针，使用编译器提供的拷贝构造与拷贝赋值函数只会拷贝指针，而无法拷贝String。
+
+如果类中带指针，因此一定要自己写拷贝构造与拷贝赋值函数。
+
+- string-test.cpp
+
+```c++
 int main()
 {
     String s1(),
     String s2("hello");
 
-    String s3(s1);
+    String s3(s1);  // 拷贝构造 clone s1
     cout << s3 << endl;
-    s3 = s2;
+
+    s3 = s2;    // 拷贝赋值
     cout << s3 << endl;
 }
+```
 
-string.h
+- string.h
 
+```c++
 #ifndef __MYSTRING__
 define __MYSTRING__
 
@@ -773,27 +853,34 @@ String::function(...)   ...
 Global-function(...)    ...
 
 #endif
+```
 
-Big Three, 三个特殊函数
+> **Big Three, 三个特殊函数**
+
 Big Three：拷贝构造、拷贝赋值、析构函数
 【注】拷贝构造、拷贝赋值，在带有指针的情况下，不能用编译器自带的那一套，需要自己编写。
 
+因为String长度无法确定，所以data处应该设计为指针。
+
+```c++
 class String
 {
 public:
-    String(const char* cstr = 0);
-    String(const String& str);//拷贝构造
-    String& operator=(const String& s);//操作符重载（拷贝赋值）
-    ~String();//析构函数
-    char* get_c_str() const { return m_data};//inline
+    String(const char* cstr = 0);       //构造函数
+    String(const String& str);          //拷贝构造
+    String& operator=(const String& s); //操作符重载（拷贝赋值）
+    ~String();                          //析构函数，对象死亡时回调用该函数
+    char* get_c_str() const { return m_data};//inline，注意这里的const
 private:
     char* m_data;
 };
-1
+```
 
 【注】类似于动态分配的方式，用指针指向字符串，而不要用数组。
 
-ctor和dtor(构造函数和析构函数)
+> **ctor和dtor(构造函数 和 析构函数)**
+
+```c++
 inline String::String(const char* cstr = 0)
 {
     if(cstr)
@@ -810,60 +897,360 @@ inline String::String(const char* cstr = 0)
 
 inline String::~String()
 {
-    delete[] m_data;
+    delete[] m_data;    // 如果没有delet将导致内存泄漏
 }
-
+```
 
 使用：
 
+```c++
 {
+    /**
+    离开作用域（一对大括号）时，s1,s2自然而然调用析构函数，p手动调用析构函数。
+     */
     String s1();
     String s2("hello");
-
+    // 动态创建
     String* p = new String("hello");
     delete p;
 }
+```
 
-【注】离开作用域（一对大括号）时，s1,s2自然而然调用析构函数，p手动调用析构函数。
+> **copy ctor(拷贝构造) 和 copy op=(拷贝赋值)**
 
-class with pointer members 必须有 copy ctor 和 copy op=
 copy ctor(拷贝构造)
 copy op=(拷贝赋值)
 
-e.g.
-a有一个data，指向Hello\0
-b有一个data，指向World\0
+- **e.g.浅拷贝**
+    a为一个指针data，指向`Hello\0`
+    b为一个指针data，指向`World\0`
 
-如果使用 default copy ctor 或 default op= 就会形成以下局面
-b = a;
-导致b的指针也指向Hello\0
+    如果使用 `default copy ctor` 或 `default op=` 就会形成以下局面`b = a;`
+    导致b的指针也指向`Hello\0`
 
-而World\0造成memory leak（内存泄漏）
-这种叫做浅拷贝
+    而`World\0`造成`memory leak（内存泄漏）`
 
-cpoy ctor(拷贝构造函数)
-深拷贝
+> **cpoy ctor(拷贝构造函数)**
 
-inline String::String(const String& str)
+**深拷贝：**
+
+```c++
+/**2-2 */
+inline String::String(const String& str)    // 传进来的值不会被更改因此需要加 const
 {
-    m_data = new char[strlen(str.m_data)+1];
+    m_data = new char[strlen(str.m_data)+1];    // 直接取另一个object的private data，兄弟间互为friend。
     strcpy(m_data, str.m_data);
 }
+```
 
 使用：
 
+```c++
 {
     String s1("hello");
     String s2(s1);
 //  String s2 = s1;
 }
+```
 
-copy assignment operator(拷贝赋值函数)
+> **copy assignment operator(拷贝赋值函数)**
+
 【注】类比：原来有一个装水和油的瓶子。现在要赋值，步骤：
 
-倒掉油（杀掉自己）
-将瓶子改造成水瓶一样大（重新创造自己）
-将水从水瓶倒入新瓶（拷贝过来）
+- 倒掉油（杀掉自己）
+- 将瓶子改造成水瓶一样大（重新创造自己）
+- 将水从水瓶倒入新瓶（拷贝过来）
+
+```c++
+inline String& String::operator=(const String&)
+{
+    if(this == &str)//检测自我赋值(self assignment)
+        return *this;
+    
+    delete[] m_data;//杀掉自己
+    m_data = new char[strlen(str.m_data) + 1];//重新创造自己
+    strcpy(m_data, str.m_data);//拷贝过来
+    return *this;  
+}
+```
+
+使用：
+
+```c++
+{
+    String s1("hello");
+    String s2(s1);
+    s2 = s1;
+}
+```
+
+一定要在 `operator=` 中检查是否是**自我赋值**`self assignment`
+
+- 【注】这样做不仅是为了提高效率，不做还会影响正确性。比如， `this`和`rhs`的指针指向同一片内存`Hello\0`。前述`operator=`的第一件事情就是`delete`，造成`this`和`rhs`指向`？？？`。然后，当企图存取（访问）`rhs`，产生不确定行为(`undefined behavior`)
+
+> **output函数**
+
+不能写成成员函数，一定要是全局函数。
+
+```c++
+#include <iostream.h>
+ostream& operator<<(ostream& os, const String& str)
+{
+    os << str.get_c_str();
+    return os;
+}
+```
+
+使用：
+
+```c++
+{
+    String s1("hello");
+    cout << s1;
+}
+```
+
+## 八、堆，栈与内存管理
+
+> **stack(栈) 和heap(堆)**
+
+**Stack**，是存在于某作用域(`scope`)的一块内存空间(`memory space`)。例如当你调用函数，函数本身即会形成一个stack用来放置它所接收的参数，以及返回地址。**在函数本体(`function body`)内声明的任何变量，其所使用的内存块都取自上述`stack`。**
+
+**Heap**，或谓`system heap`，是指由操作系统提供的一块`global`内存空间，程序可动态分配(`dynamic allocated`)从某中获得若干区块(`blocks`)。
+
+```c++
+class Complex{...};
+...
+{
+    Complex c1(1, 2);       // c1所占用的空间来自stack
+    // Complex(3)是个临时对象，其所占用的空间乃是以new自heap动态分配而得，并由p指向。
+    Complex* p = new Complex(3);
+}
+```
+
+> **`stack objects` 的生命期**
+
+```c++
+class Complex{...};
+...
+{
+    Complex c1(1, 2);
+}
+```
+
+c1便是所谓`stack object`，其生命在作用域(`scope`)结束之后结束。
+这种作用域内的`object`，又称为`auto object`，因为它会被“自动”清理。
+
+> **`staic local objects` 的生命期**
+
+```c++
+class Complex{...};
+...
+{
+    static Complex c2(1, 2);
+}
+```
+
+`c2`便是所谓的`static object`，其生命在作用域(`scope`)结束之后仍然存在，直到整个程序结束。
+
+> **`global objects` 的生命期**
+
+```c++
+class Complex{...};
+...
+Complex c3(1, 2);
+
+int main()
+{
+    ...
+}
+```
+
+`c3`便是所谓`global object`，其**生命在整个程序结束之后才结束**。也可以把它视为一种`static object`，其作用域是“整个程序”。
+
+> **`heap objects` 的生命期**
+
+```c++
+class Complex{...};
+...
+{
+    Complex* p = new Complex;
+    ...
+    delete p;
+}
+```
+
+`p`所指的便是`heap object`，其生命在它被`deleted`之后结束。
+
+```cpp
+class Complex{...};
+...
+{
+    Complex* p = new Complex;
+}
+```
+
+以上为内存泄漏(`memory leak`)，因为当作用域结束，`p`所指的`heap object`仍然存在，但指针`p`的生命却结束了，作用域之外再也看不到`p`（也就没机会`delete p`）。
+
+> **new:先分配memory,再调用ctor**
+
+```c++
+Complex* pc = new Complex(1, 2);
+```
+
+上述代码被编译器转化为：
+
+```c++
+Complex *pc;
+
+void* mem = operator new(sizeof(Complex));  //1.分配内存
+pc = static_cast<Complex*>(mem);            //2.转型
+pc->Complex::Complex(1, 2);                 //3.构造函数
+```
+
+**第一步**：`operator new`是一个函数，其内部调用`malloc(n)`
+
+**第二步**： 指针类型转换
+
+**第三步**： 调用构造函数，构造函数的全名如下
+
+```c++
+pc -> Complex::Complex(pc, 1 ,2); // pc即隐藏的参数this。
+```
+
+> **delete: 先调用dtor,再释放memory**
+
+- Copmlex类
+
+```cpp
+Complex* ps = new Complex(1, 2);
+...
+delete ps;
+```
+
+上述代码被编译器转化为
+
+```cpp
+Complex::~Complex(ps);  //1. 析构函数
+operator delete(ps);    //2. 释放内存
+```
+
+- String 类
+
+```cpp
+String* ps = new String("Hello");
+...
+delete ps;
+```
+
+上述代码被编译器转换为
+
+```cpp
+String::~String(ps);      // 1.析构函数
+operator delete(ps);      // 2.释放内存
+```
+
+**第一步：** 调用析构函数
+
+对于`Complex`类，调用的是编译器提供的析构函数，未进行任何操作
+
+而对于`String`类，需要自己实现析构函数，我们自己编写的析构函数进行了如下操作
+
+```cpp
+Class String
+{
+public:
+    ~String(){
+        delete[] m_data;
+    }
+    ...
+private:
+    char* m_data;
+};
+```
+
+**第二步：** 释放内存，`delete`函数内部调用`free(ps)`
+
+析构函数负责先删除内容，`delete`删除指针
+
+> **动态分配所得的内存块(`memory block`),in VC**
+
+![](https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——动态分配所得的内存块.png?raw=true)
+
+- `Complex`
+  - **非调试模式下（左2列）**：`Complex`大小为`8`，首尾各有一个`cookie`**（4*2）**（用于告诉回收时内存大小），共计 **16**。release下没有灰色部分。
+  
+  - **调试模式下（左1列）**：调试模式下会增加灰色的内存块 **（32+4）**，并且收尾各有一个`cookie` **（4*2）**（用于告诉回收时内存大小），**共计 52**。由于vc编译器下内存分配都是16的倍数，所以需要一些填补物(pad)，**填充之后共计 64。**
+
+- `String`
+  - **非调试模式下（右1列）**：`String`大小为`4`，首尾各有一个`cookie`**（4*2）**（用于告诉回收时内存大小），共计 **12**。由于vc编译器下内存分配都是16的倍数，所以需要一些填补物(pad)，**填充之后共计 16。**
+  
+  - **调试模式下（右2列）**：调试模式下会增加灰色的内存块 **（32+4）**，并且收尾各有一个`cookie`**（4*2）**（用于告诉回收时内存大小），**共计 48**。
+
+> **动态分配所得的`array`,`array new`**
+
+vc编译器用一个整数记录数组个数，所以最后`+4`
+
+![](https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——动态分配所得的array.png?raw=true)
+
+> **`array new`一定要搭配`array delete`**
+
+![](https://raw.githubusercontent.com/hubojing/BlogImages/master/C%2B%2B%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%BE%AF%E6%8D%B7%EF%BC%89%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94array%20new%E4%B8%80%E5%AE%9A%E8%A6%81%E6%90%AD%E9%85%8Darray%20delete.png)
+
+【注】
+
+- 看清内存泄漏的地方。
+- `Complex`类由于是`class without point`，`array new` 可以跟`delete`搭配使用，但是以防万一，需要养成良好的编程习惯，**`array new`一定要搭配`array delete`**。
+
+## 九、复习String类的实现过程
+
+参考文件`String.h`和`String-test.class`
+
+```cpp
+#ifndef __MYSTRING__
+define __MYSTRING__
+
+class String
+{
+public:
+    String(const char* cstr = 0);       //构造函数
+    String(const String& str);          //拷贝构造
+    String& operator=(const String& s); //操作符重载（拷贝赋值）
+    ~String();                          //析构函数，对象死亡时回调用该函数
+    char* get_c_str() const { return m_data};//inline，注意这里的const
+private:
+    char* m_data;
+};
+
+// 构造函数
+inline String::String(const char* cstr = 0)
+{
+    if(cstr)
+    {
+        m_data = new char[strlen(cstr)+1];
+        strcpy(m_data, cstr);
+    }
+    else
+    {//未指定初值
+        m_data = new char[1];
+        *m_data = '\0';
+    }
+}
+
+// 析构函数
+inline String::~String()
+{
+    delete[] m_data;    // 如果没有delet将导致内存泄漏
+}
+
+// 拷贝构造函数
+inline String::String(const String& str)    // 传进来的值不会被更改因此需要加 const
+{
+    m_data = new char[strlen(str.m_data)+1];    // 直接取另一个object的private data，兄弟间互为friend。
+    strcpy(m_data, str.m_data);
+}
+
+// 拷贝赋值函数
 inline String& String::operator=(const String&)
 {
     if(this == &str)//检测自我赋值(self assignment)
@@ -875,162 +1262,21 @@ inline String& String::operator=(const String&)
     return *this;  
 }
 
-使用：
-
-{
-    String s1("hello");
-    String s2(s1);
-    s2 = s1;
-}
-
-
-一定要在 operator= 中检查是否 self assignment
-【注】这样做不仅是为了提高效率，不做还会影响正确性。
-
-比如， this和rhs的指针指向同一片内存Hello\0
-前述operator=的第一件事情就是delete，造成this和rhs指向？？？
-然后，当企图存取（访问）rhs，产生不确定行为(undefined behavior)
-
-output函数
-
+// 输出函数 
 #include <iostream.h>
 ostream& operator<<(ostream& os, const String& str)
 {
     os << str.get_c_str();
     return os;
 }
+#endif
 
+```
 
-使用：
+【注】：
 
-{
-    String s1("hello");
-    cout << s1;
-}
-
-## 八、堆，栈与内存管理
-
-所谓stack(栈)，所谓heap(堆)
-Stack，是存在于某作用域(scope)的一块内存空间(memory space)。例如当你调用函数，函数本身即会形成一个stack用来放置它所接收的参数，以及返回地址。
-在函数本体(function body)内声明的任何变量，其所使用的内存块都取自上述stack。
-
-Heap，或谓system heap，是指由操作系统提供的一块global内存空间，程序可动态分配(dynamic allocated)从某中获得若干区块(blocks)。
-
-class Complex{...};
-...
-{
-    Complex c1(1, 2);
-    Complex* p = new Complex(3);
-}
-
-
-c1所占用的空间来自stack
-Complex(3)是个临时对象，其所占用的空间乃是以new自heap动态分配而得，并由p指向。
-
-stack objects 的生命期
-class Complex{...};
-...
-{
-    Complex c1(1, 2);
-}
-
-
-c1便是所谓stack object，其生命在作用域(scope)结束之后结束。
-这种作用域内的object，又称为auto object，因为它会被“自动”清理。
-
-stack local objects 的生命期
-class Complex{...};
-...
-{
-    static Complex c2(1, 2);
-}
-
-
-c2便是所谓的static object，其生命在作用域(scope)结束之后仍然存在，直到整个程序结束。
-
-global objects 的生命期
-class Complex{...};
-...
-Complex c3(1, 2);
-
-int main()
-{
-    ...
-}
-
-
-c3便是所谓global object，其生命在整个程序结束之后才结束。也可以把它视为一种static object，其作用域是“整个程序”。
-
-heap objects 的生命期
-class Complex{...};
-...
-{
-    Complex* p = new Complex;
-    ...
-    delete p;
-}
-
-
-p所指的便是heap object，其生命在它被deleted之后结束。
-
-class Complex{...};
-...
-{
-    Complex* p = new Complex;
-}
-
-
-以上为内存泄漏(memory leak)，因为当作用域结束，p所指的heap object仍然存在，但指针p的生命却结束了，作用域之外再也看不到p（也就没机会delete p）。
-
-new:先分配memory,再调用ctor
-Complex* pc = new Complex(1, 2);
-1
-编译器转化为
-
-Complex *pc;
-
-void* mem = operator new(sizeof(Complex));//分配内存
-pc = static_cast<Complex*>(mem);//转型
-pc->Complex::Complex(1, 2);//构造函数
-
-
-operator new是一个函数，其内部调用malloc(n)
-构造函数的全名是
-
-Complex::Complex(pc, 1 ,2);
-
-pc即隐藏的参数this。
-
-delete: 先调用dtor,再释放memory
-Complex* ps = new Complex(1, 2);
-...
-delete ps;
-
-编译器转化为
-
-Complex::~Complex(ps);//析构函数
-operator delete(ps);//释放内存
-
-delete函数内部调用free(ps)
-
-析构函数先删除内容，delete删除指针
-
-动态分配所得的内存块(memory block),in VC
-Complex大小为8b，调试模式下会增加灰色的内存块（32+4），并且收尾各有一个cookie（4*2）（用于回收）
-vc每一块都是16的倍数，所以需要一些填补物(pad)
-
-release下没有灰色部分
-
-String大小为4b
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-RcR4ev1M-1634388013117)(https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——动态分配所得的内存块.png?raw=true)]
-
-动态分配所得的array
-vc用一个整数记录数组个数，所以+4
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-ZidxhGQN-1634388013119)(https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——动态分配所得的array.png?raw=true)]
-
-array new一定要搭配array delete
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-Af7BeT5l-1634388013121)(https://raw.githubusercontent.com/hubojing/BlogImages/master/C%2B%2B%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%BE%AF%E6%8D%B7%EF%BC%89%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94array%20new%E4%B8%80%E5%AE%9A%E8%A6%81%E6%90%AD%E9%85%8Darray%20delete.png)]
-【注】看清内存泄漏的地方。
+- type&：表示reference
+- &object： 表示取地址，得到一个指针
 
 ## 十、扩展补充：类模板，函数模板及其他
 
@@ -1040,6 +1286,7 @@ static
 
 如设计银行户头的类
 
+```c++
 class Account
 {
 public:
@@ -1055,6 +1302,7 @@ int main()
     Account a;
     a.set_rate(7.0);
 }
+```
 
 调用static函数的方式有二：
 （1）通过object调用
@@ -1063,6 +1311,7 @@ int main()
 把ctor放在private区
 Singleton
 
+```c++
 class A
 {
 public:
@@ -1074,15 +1323,18 @@ private:
     static A a;//已经创建了一份
     ...
 };
-
+```
 
 使用：
 
+```c++
 A::getInstance().setup();
-1
+```
+
 如果不用a，但a仍然存在，为避免资源浪费，更好的写法是：
 Meyers Singleton
 
+```c++
 class A
 {
 public:
@@ -1099,12 +1351,15 @@ A& A::getInstance()
     static A a;
     return a;
 }
-
+```
 
 使用：
 
+```c++
 A::getInstance().setup();
-1
+```
+
+```c++
 cout
 class _IO_ostream_withassign:public ostream{
     ...
@@ -1130,9 +1385,11 @@ public:
     ostream& operator<<(unsigned long n);
     ...
 };
-
+```
 
 class template,类模板
+
+```c++
 template<typename T>
 class complex
 {
@@ -1147,32 +1404,38 @@ private:
 
     friend complex& __doapl(complex*, const complex&);
 };
-
+```
 
 使用：
 
+```c++
 {
     complex<double> c1(2.5, 1.5);
     complex<int> c2(2, 6);
     ...
 }
-
+```
 
 function template, 函数模板
+
+```c++
 stone r1(2,3),r(3,3),r3;
 r3 = min(r1, r2);
-
+```
 
 编译器会对function template进行引数推导(argument deduction)
 
+```c++
 template<class T>
 inline const T& min(const T& a, const T& b)
 {
     return b < a ? b : a;
 }
+```
 
 引数推导的结果，T为stone，于是调用stone::operator<
 
+```c++
 class stone
 {
 public:
@@ -1225,8 +1488,10 @@ int main()
 
     return 0;
 }
-
+```
 更多细节与深入
+
+```
 operator type() const;
 *explicit complex(…):initialization list{}
 pointer-like object
@@ -1242,6 +1507,7 @@ lambda(since C++11)
 range-base for loop(since C++11)
 unordered containers(since C++ 11)
 …
+```
 
 ## 十一、组合与继承
 
@@ -1252,6 +1518,7 @@ Delegation(委托)
 Compostion(复合)，表示has-a
 Adapter
 
+```c++
 template <class T, class Sequence = deque<T>>
 class queue
 {
@@ -1268,10 +1535,11 @@ public:
     void push(const value_type& x) {c.push_back(x);}
     void pop() {c.pop_front();}
 };
-
+```
 
 从内存角度看
 
+```c++
 template <class T>
 class queue
 {
@@ -1280,9 +1548,11 @@ protected:
 ...
 };
 1
+```
 
 Sizeof: 40
 
+```c++
 template <class T>
 class deque
 {
@@ -1306,22 +1576,29 @@ struct Itr
 };
 
 Sizeof: 4*4
+```
 
 Composition(复合)关系下的构造和析构
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-FfzqBLZg-1634388013123)(https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——复合关系下的构造和析构.png?raw=true)]
+![](https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——复合关系下的构造和析构.png?raw=true)
+
 构造由内而外
 Container的构造函数首先调用Component的default构造函数，然后才执行自己。
 
+```c++
 Container::Container(...):Component(){...};
+```
 
 析构由外而内
 Container的析构函数首先执行自己，然后才调用Component的析构函数。
 
+```c++
 Container:~Container(...){... ~Component()};
+```
 
 Delegation(委托). Composition by reference.
 Handle/Body(pImpl)
 
+```c++
 //file String.hpp
 class StringRep;
 class String
@@ -1353,15 +1630,20 @@ friend class String;
 
 String::String(){...}
 ...
-
+```
 
 这种手法可称为编译防火墙
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-jdvEXkFA-1634388013129)(https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——引用计数.png?raw=true)]
+
+![](https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——引用计数.png?raw=true)
+
 n=3
 共享同一个Hello，节省内存。
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-AquVjEl4-1634388013130)(https://raw.githubusercontent.com/hubojing/BlogImages/master/C%2B%2B%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%BE%AF%E6%8D%B7%EF%BC%89%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94%E5%A7%94%E6%89%98%20%E5%9B%BE.png)]
+
+![](https://raw.githubusercontent.com/hubojing/BlogImages/master/C%2B%2B%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%BE%AF%E6%8D%B7%EF%BC%89%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94%E5%A7%94%E6%89%98%20%E5%9B%BE.png)
 
 Inheritance(继承), 表示is-a
+
+```c++
 struct _List_node_base
 {
     _List_node_base* _M_next;
@@ -1373,11 +1655,13 @@ struct _List_node:public _List_node_base
 {
     _Tp _M_data;
 };
+```
 
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-HGNlGZxN-1634388013133)(https://raw.githubusercontent.com/hubojing/BlogImages/master/C%2B%2B%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%BE%AF%E6%8D%B7%EF%BC%89%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94%E7%BB%A7%E6%89%BF%20%E5%9B%BE.png)]
+![](https://raw.githubusercontent.com/hubojing/BlogImages/master/C%2B%2B%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%BE%AF%E6%8D%B7%EF%BC%89%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94%E7%BB%A7%E6%89%BF%20%E5%9B%BE.png)
 
 Inheritance(继承)关系下的构造和析构
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-9vJeNqG4-1634388013135)(https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——继承关系下的构造和析构.png?raw=true)]
+
+![](https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——继承关系下的构造和析构.png?raw=true)
 
 base class的dtor必须是virtual，否则会出现undefined behavior
 
@@ -1398,6 +1682,7 @@ pure virtual函数：希望derived class一定要重新定义(override)它，对
 
 【注】：纯虚函数其实可以有定义，只是本文不提及。
 
+```c++
 class Shape
 {
 public:
@@ -1409,10 +1694,11 @@ public:
 
 class Rectangle:public Shape {...};
 class Ellipse:public Shape {...};
+```
 
 Template Method
 
-
+```c++
 #include <iostream>
 using namespace std;
 
@@ -1449,9 +1735,11 @@ int main()
     CMyDoc myDoc;//假设对应[File/open]
     myDoc.OnFileOpen();
 }
+```
 
 Inheritance + Composition关系下的构造和析构
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-kh9PcCZ7-1634388013137)(https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——继承+复合.png?raw=true)]
+
+![](https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——继承+复合.png?raw=true)
 
 第一个问号：
 
@@ -1461,6 +1749,7 @@ Inheritance + Composition关系下的构造和析构
 Delegation(委托) + Inheritance(继承)
 Observer
 
+```c++
 class Subject
 {
     int m_value;
@@ -1481,52 +1770,31 @@ public:
             m_views[i]->update(this, m_value);
     }
 };
+```
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
+```c++
 class Observer
 {
 public:
     virtual void update(Subject* sub, int value) = 0;
 };
-1
-2
-3
-4
-5
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-elGo2yrc-1634388013140)(https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——委托+继承.png?raw=true)]
+```
+
+![](https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——委托+继承.png?raw=true)
 
 Composite
-[外链图片转存失败,源站可能有防盗链机制,建议将图片保存下来直接上传(img-wjsbbVAA-1634388013144)(https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——Composite.png?raw=true)]
 
+![](https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——Composite.png?raw=true)
+
+```c++
 class Primitive:public Component
 {
 public:
     Primitive(int val):Component(val) {}
 };
-1
-2
-3
-4
-5
+```
+
+```c++
 class Component
 {
     int value;
@@ -1534,13 +1802,9 @@ public:
     Component(int val) { value = val; }
     virtual void add(Component*) {}
 };
-1
-2
-3
-4
-5
-6
-7
+```
+
+```c++
 class Composite:public Component
 {
     vector<Component*>c;
@@ -1553,9 +1817,11 @@ public:
     }
 ...
 };
+```
 
 **Prototype**
 ![Prototype](https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——Prototype.png?raw=true)
+
 出自Design Patterns Explained Simply
 
 ```cpp
@@ -1585,48 +1851,9 @@ private:
 Image *Image::prototypes[];//定义
 int Image::_nextSlot;//定义
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
+```
+
+```cpp
 //Client calls this public static member function when it needs an instance 
 Image *Image::findAndClone(imageType type)
 {
@@ -1636,17 +1863,11 @@ Image *Image::findAndClone(imageType type)
         return _prototypes[i]->clone();
     }
 }
-1
-2
-3
-4
-5
-6
-7
-8
-9
+```
+
 子类
 
+```cpp
 class LandSatImage:public Image
 {
 public:
@@ -1695,55 +1916,9 @@ private:
 };
 Image *Image::prototypes[];//定义
 int Image::_nextSlot;//定义
+```
 
-1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
+```cpp
 //Client calls this public static member function when it needs an instance 
 Image *Image::findAndClone(imageType type)
 {
@@ -1753,10 +1928,11 @@ Image *Image::findAndClone(imageType type)
         return _prototypes[i]->clone();
     }
 }
-
+```
 
 子类
 
+```cpp
 class LandSatImage:public Image
 {
 public:
@@ -1796,3 +1972,4 @@ private:
 LandSatImage LandSatImage::_landSatImage;
 //Initialize the "state" per instance mechanism
 int LandSatImage::_count = 1;
+```
