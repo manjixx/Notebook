@@ -1280,9 +1280,12 @@ ostream& operator<<(ostream& os, const String& str)
 
 ## 十、扩展补充：类模板，函数模板及其他
 
-static
-静态函数和一般成员函数的区别：静态函数没有this pointer
-静态函数只能处理静态数据
+> **static**
+
+**静态函数：**
+
+- 静态函数和一般成员函数的区别：静态函数没有this pointer
+- 静态函数只能处理静态数据
 
 如设计银行户头的类
 
@@ -1297,30 +1300,32 @@ double Account::m_rate = 8.0;
 
 int main()
 {
-    Account::set_rate(5.0);
+    Account::set_rate(5.0); // 通过class name调用static函数
 
     Account a;
-    a.set_rate(7.0);
+    a.set_rate(7.0);    // 通过class name调用static函数
 }
 ```
 
 调用static函数的方式有二：
-（1）通过object调用
-（2）通过class name调用
 
-把ctor放在private区
-Singleton
+- （1）通过object调用
+- （2）通过class name调用
+
+> **把ctor放在private区**
+
+**Singleton**
 
 ```c++
 class A
 {
 public:
-    static A& getInstance{return a;};//取得唯一的自己
+    static A& getInstance{return a;};// 对外界唯一的接口，取得唯一的自己
     setup(){...}
 private:
-    A();//任何人不能创建它
+    A();                //任何人不能创建它
     A(const A& rhs);
-    static A a;//已经创建了一份
+    static A a;         //已经创建了一份
     ...
 };
 ```
@@ -1331,8 +1336,11 @@ private:
 A::getInstance().setup();
 ```
 
-如果不用a，但a仍然存在，为避免资源浪费，更好的写法是：
-Meyers Singleton
+如果不用a，但a仍然存在，为避免资源浪费。
+
+更好的写法如下。
+
+**Meyers Singleton**
 
 ```c++
 class A
@@ -1359,14 +1367,17 @@ A& A::getInstance()
 A::getInstance().setup();
 ```
 
+> **cout**
+
 ```c++
-cout
+
 class _IO_ostream_withassign:public ostream{
     ...
 };
 extern _IO_ostream_withassign cout;
+```
 
-
+```cpp
 class ostream:virtual public ios
 {
 public:
@@ -1387,7 +1398,9 @@ public:
 };
 ```
 
-class template,类模板
+> **class template,类模板**
+
+类型不写死，用符号T告诉编译器，现在类型不确定后续添加。
 
 ```c++
 template<typename T>
@@ -1416,24 +1429,24 @@ private:
 }
 ```
 
-function template, 函数模板
+> **function template, 函数模板**
 
 ```c++
 stone r1(2,3),r(3,3),r3;
 r3 = min(r1, r2);
 ```
 
-编译器会对function template进行引数推导(argument deduction)
+编译器会对`function template`进行引数推导(`argument deduction`)
 
 ```c++
-template<class T>
+template <class T>       // T未定
 inline const T& min(const T& a, const T& b)
 {
     return b < a ? b : a;
 }
 ```
 
-引数推导的结果，T为stone，于是调用stone::operator<
+引数推导的结果，`T`为`stone`，于是进行**操作符重载**，调用`stone::operator <`
 
 ```c++
 class stone
@@ -1441,19 +1454,27 @@ class stone
 public:
     stone(int w, int h, int we):_w(w), _h(h), _weight(we)
     {}
+    // 操作符重载
     bool operator< (const strone& rhs) const
     {return _weight < rhs._weight;}
 private:
     int _w, _h, _weight;
 };
+```
 
-namespace
+> **namespace**
+
+```cpp
 namespace std
 {
     ...
 }
+```
 
-using directive
+```cpp
+/** 
+using directive 全开
+*/
 
 #include<iostream.h>
 using namespace std;
@@ -1465,9 +1486,14 @@ int main()
 
     return 0;
 }
+```
 
-using declaration
+```cpp
 
+/*
+    using declaration
+    一行一行引入
+*/
 #include<iostream.h>
 using std::cout;
 
@@ -1478,7 +1504,9 @@ int main()
 
     return 0;
 }
+```
 
+```cpp
 #include<iostream.h>
 
 int main()
@@ -1489,9 +1517,10 @@ int main()
     return 0;
 }
 ```
-更多细节与深入
 
-```
+> **更多细节与深入**
+
+```cpp
 operator type() const;
 *explicit complex(…):initialization list{}
 pointer-like object
@@ -1511,12 +1540,22 @@ unordered containers(since C++ 11)
 
 ## 十一、组合与继承
 
-Object Oriented Programming, Object Oriented Design OOP, OOD
-Inheritance(继承)
-Composition(复合)
-Delegation(委托)
-Compostion(复合)，表示has-a
-Adapter
+> **Object Oriented Programming, Object Oriented Design OOP, OOD**
+
+`complex`类的实现-基于对象设计OOD
+
+面向对象的设计OOP：
+
+- Inheritance(继承)
+- Composition(复合)
+- Delegation(委托)
+
+> **Compostion(复合)，表示`has-a`**
+
+`queue`里边有一个`deque`,`has-a`的关系
+二者生命周期是一致的
+
+这里涉及到`Adapter`设计模式
 
 ```c++
 template <class T, class Sequence = deque<T>>
@@ -1540,6 +1579,9 @@ public:
 从内存角度看
 
 ```c++
+/**
+    Sizeof: 40 
+*/
 template <class T>
 class queue
 {
@@ -1547,12 +1589,12 @@ protected:
     deque<T> c;
 ...
 };
-1
 ```
 
-Sizeof: 40
-
 ```c++
+/**
+    Sizeof: 16 * 2 + 4 + 4
+ */
 template <class T>
 class deque
 {
@@ -1562,8 +1604,12 @@ protected:
     T** map;
     unsigned int map_size;
 };
+```
 
-Sizeof: 16 * 2 + 4 + 4
+```cpp
+/**
+Sizeof: 4*4
+ */
 
 template <class T>
 struct Itr
@@ -1574,31 +1620,38 @@ struct Itr
     T** node;
 ...
 };
-
-Sizeof: 4*4
 ```
 
-Composition(复合)关系下的构造和析构
+**Composition(复合)关系下的构造和析构**
+
 ![](https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——复合关系下的构造和析构.png?raw=true)
 
-构造由内而外
-Container的构造函数首先调用Component的default构造函数，然后才执行自己。
+- 左边拥有右边
+
+- **构造由内而外：** `Container`的构造函数首先调用`Component`的`default`构造函数，然后才执行自己。
 
 ```c++
 Container::Container(...):Component(){...};
 ```
 
-析构由外而内
-Container的析构函数首先执行自己，然后才调用Component的析构函数。
+- **析构由外而内：** `Container`的析构函数首先执行自己，然后才调用`Component`的析构函数。
 
 ```c++
 Container:~Container(...){... ~Component()};
 ```
 
-Delegation(委托). Composition by reference.
+> **Delegation(委托). Composition by reference.**
+
+通过指针相连，二者生命周期不同步，StringRep* 先创建出来等其需要动作时，才去调用StringRep
+
+这种手法可称为编译防火墙
+
 Handle/Body(pImpl)
 
 ```c++
+/**
+Handle
+*/
 //file String.hpp
 class StringRep;
 class String
@@ -1613,13 +1666,16 @@ public:
 private:
     StringRep* rep;//pimpl
 };
+```
 
+```cpp
+/**
+Body(pImpl)
+*/
 //file String.cpp
 #include "String.hpp"
-namespace
-{
-class StringRep
-{
+namespace{
+class StringRep{
 friend class String;
     StringRep(const char* s);
     ~StringRep();
@@ -1630,18 +1686,15 @@ friend class String;
 
 String::String(){...}
 ...
-```
-
-这种手法可称为编译防火墙
+ ```
 
 ![](https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——引用计数.png?raw=true)
 
-n=3
-共享同一个Hello，节省内存。
+`n=3`共享同一个Hello，节省内存。涉及copy or write
 
 ![](https://raw.githubusercontent.com/hubojing/BlogImages/master/C%2B%2B%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%BE%AF%E6%8D%B7%EF%BC%89%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94%E5%A7%94%E6%89%98%20%E5%9B%BE.png)
 
-Inheritance(继承), 表示is-a
+> **Inheritance(继承), 表示is-a**
 
 ```c++
 struct _List_node_base
@@ -1651,34 +1704,44 @@ struct _List_node_base
 };
 
 template<typename _Tp>
-struct _List_node:public _List_node_base
+struct _List_node
+    :public _List_node_base //继承
 {
     _Tp _M_data;
 };
-```
+ ```
+
+`c++`里继承有：`public、private、protected`三种
+
+父类的数据被子类完整继承。
 
 ![](https://raw.githubusercontent.com/hubojing/BlogImages/master/C%2B%2B%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%EF%BC%88%E4%BE%AF%E6%8D%B7%EF%BC%89%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%94%E7%BB%A7%E6%89%BF%20%E5%9B%BE.png)
 
-Inheritance(继承)关系下的构造和析构
+> **Inheritance(继承)关系下的构造和析构**
 
 ![](https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——继承关系下的构造和析构.png?raw=true)
 
-base class的dtor必须是virtual，否则会出现undefined behavior
+`base class`的`dtor`必须是`virtual`，否则会出现`undefined behavior`
 
-构造由内而外
-Derived的构造函数首先调用Base的default构造函数，然后才执行自己。
+- **构造由内而外**：子类`Derived`的构造函数首先调用父类`Base`的`default`构造函数，然后才执行自己。
 
+```cpp
 Derived::Derived(...):Base(){...};
-1
-析构由外而内
-Derived的析构函数首先执行自己，然后才调用Base的析构函数。
+```
 
+- **析构由外而内**：子类`Derived`的析构函数首先执行自己，然后才调用父类`Base`的析构函数。
+
+```cpp
 Derived::~Derived(...){...~Base()};
-1
-Inheritance(继承) with virtual functions(虚函数)
-non-virtual函数：不希望derived class重新定义(override,复写)它。
-virtual函数：希望derived class重新定义(override，复写)它，它已有默认定义。
-pure virtual函数：希望derived class一定要重新定义(override)它，对它没有默认定义。
+```
+
+> **Inheritance(继承) with virtual functions(虚函数)**
+
+继承搭配虚函数使用
+
+- `non-virtual`函数：不希望子类`derived class`重新定义(`override`,复写)它。
+- `virtual`函数：希望`derived class`重新定义(`override`，复写)它，它已有默认定义。
+- `pure virtual`函数：希望`derived class`一定要重新定义(`override`)它，对它没有默认定义。
 
 【注】：纯虚函数其实可以有定义，只是本文不提及。
 
@@ -1696,9 +1759,11 @@ class Rectangle:public Shape {...};
 class Ellipse:public Shape {...};
 ```
 
-Template Method
+- **`Template Method`**
 
 ```c++
+/**Application FrameWork */
+
 #include <iostream>
 using namespace std;
 
@@ -1711,6 +1776,7 @@ public:
         cout << "dialog..." << endl;
         cout << "check file status..." << endl;
         cout << "open file..." << endl;
+        // 关键动作延缓到子类中去实现，让子类实现该虚函数
         Serialize();
         cout << "close file..." << endl;
         cout << "update all views..." << endl;
@@ -1718,8 +1784,10 @@ public:
 
     virtual void Serialize()  {};
 };
+```
 
-
+```cpp
+/** Application */
 class CMyDoc : public CDocument
 {
 public:
@@ -1729,25 +1797,34 @@ public:
         cout << "CMyDoc::Serialize()" << endl;
     }
 };
+```
 
+```cpp
 int main()
 {
     CMyDoc myDoc;//假设对应[File/open]
+    // 子类对象调用父类的函数
     myDoc.OnFileOpen();
+    // CDoucument::OnFileOpen(&myDoc);
 }
 ```
 
-Inheritance + Composition关系下的构造和析构
+> **Inheritance + Composition关系下的构造和析构**
 
 ![](https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——继承+复合.png?raw=true)
 
-第一个问号：
+**第一个问号**：课堂作业
 
-第二个问号：构造函数调用顺序：Component, Base , Derived
-析构函数则相反。
+**第二个问号**：
 
-Delegation(委托) + Inheritance(继承)
-Observer
+- **构造函数调用顺序**：Component, Base , Derived
+- **析构函数**则相反。
+
+> **Delegation(委托) + Inheritance(继承)**
+
+![](https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——委托+继承.png?raw=true)
+
+Observer-观察者模式
 
 ```c++
 class Subject
@@ -1780,9 +1857,7 @@ public:
 };
 ```
 
-![](https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——委托+继承.png?raw=true)
-
-Composite
+> **Composite** 委托+继承
 
 ![](https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——Composite.png?raw=true)
 
@@ -1819,10 +1894,17 @@ public:
 };
 ```
 
-**Prototype**
+> **Prototype，委托+继承**
+
+树状继承器，想要创建未来才会出现的子类。即预先设计框架，而子类未来才会派生。
+
+解决方案，子类自己创建一个自己的对象，然后告诉父类有子类对象的存在。
+
 ![Prototype](https://github.com/hubojing/BlogImages/blob/master/C++面向对象程序设计（侯捷）笔记——Prototype.png?raw=true)
 
 出自Design Patterns Explained Simply
+
+**父类：**
 
 ```cpp
 #include<iostream.h>
@@ -1850,7 +1932,6 @@ private:
 };
 Image *Image::prototypes[];//定义
 int Image::_nextSlot;//定义
-
 ```
 
 ```cpp
@@ -1865,7 +1946,7 @@ Image *Image::findAndClone(imageType type)
 }
 ```
 
-子类
+**子类：**
 
 ```cpp
 class LandSatImage:public Image
@@ -1892,7 +1973,7 @@ protected:
     }
 private:
     //Mechanism for initializing an Image subclass - this causes
-    the default ctor to be called, which registers the subclass's prototype
+    //the default ctor to be called, which registers the subclass's prototype
     static LandSatImage _landSatImage;
     //This is only called when the private static data member is inited
     LandSatImage()
@@ -1907,60 +1988,39 @@ private:
 LandSatImage LandSatImage::_landSatImage;
 //Initialize the "state" per instance mechanism
 int LandSatImage::_count = 1;
-ypes[_nextSlot++] = image;
-    }
-private:
-    //addPrototype() saves each registered prototype here
-    static Image* _prototypes[10];
-    static int _nextSlot;
-};
-Image *Image::prototypes[];//定义
-int Image::_nextSlot;//定义
 ```
 
-```cpp
-//Client calls this public static member function when it needs an instance 
-Image *Image::findAndClone(imageType type)
-{
-    for(int i = 0; i < _nextSlot; i++)
-    {
-        if(_prototypes[i]->returnType())
-        return _prototypes[i]->clone();
-    }
-}
-```
-
-子类
+**子类：**
 
 ```cpp
-class LandSatImage:public Image
+class SpotImage:public Image
 {
 public:
     imageType returnType()
     {
-        return LSAT;
+        return SPOT;
     }
     void draw()
     {
-        cout << "LandSatImage::draw" << _id << endl;
+        cout << "SpotImage::draw" << _id << endl;
     }
     //When clone() is called, call the one-argument with a dummy arg
     Image *clone()
     {
-        return new LandSatImage(1); 
+        return new SpotImage(1); 
     }
 protected:
     //This is only called from clone()
-    LandSatImage(int dummy)
+    SpotImage(int dummy)
     {
         _id = _count++;
     }
 private:
     //Mechanism for initializing an Image subclass - this causes
-    the default ctor to be called, which registers the subclass's prototype
-    static LandSatImage _landSatImage;
+    //the default ctor to be called, which registers the subclass's prototype
+    static SpotImage _spotImage;
     //This is only called when the private static data member is inited
-    LandSatImage()
+    SpotImage()
     {
         addPrototype(this);
     }
@@ -1968,8 +2028,4 @@ private:
     int _id;
     static int _count;
 };
-//Register the subclass's prototype
-LandSatImage LandSatImage::_landSatImage;
-//Initialize the "state" per instance mechanism
-int LandSatImage::_count = 1;
 ```
