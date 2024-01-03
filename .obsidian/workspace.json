@@ -1,0 +1,179 @@
+{
+  "main": {
+    "id": "6506446d94ff8071",
+    "type": "split",
+    "children": [
+      {
+        "id": "f8a2fa207f224911",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "de8e3ace4f057d03",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "3. Java/3.1 Java语言基础/On Java/第一章 对象的概念.md",
+                "mode": "source",
+                "source": true
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "5395c4d6dfae0e29",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "94471725beeb7e46",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "3. Java/3.1 Java语言基础/On Java/第一章 对象的概念.md",
+                "mode": "preview",
+                "source": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "3a655cf566940e5a",
+    "type": "split",
+    "children": [
+      {
+        "id": "073203ae6f66ae4e",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5d8eb6fa99517bef",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "9204d1beb7c21ea6",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "c153e463082968f3",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "right": {
+    "id": "a4cb7e60907f4dfd",
+    "type": "split",
+    "children": [
+      {
+        "id": "520a67be03b3a4c6",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "09bf17e8179ae8b5",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "3. Java/3.1 Java语言基础/On Java/第一章 对象的概念.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "0828b6c50d2c67fd",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "3. Java/3.1 Java语言基础/On Java/第一章 对象的概念.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "e0db3e343af59403",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "8cf1813dc9f0b2ea",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "3. Java/3.1 Java语言基础/On Java/第一章 对象的概念.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false
+    }
+  },
+  "active": "94471725beeb7e46",
+  "lastOpenFiles": [
+    "3. Java/3.1 Java语言基础/On Java/第一章 对象的概念.md",
+    "未命名.canvas",
+    "3. Java/3.1 Java语言基础/On Java",
+    "PiggyMetrics/未命名.md",
+    "PiggyMetrics/环境配置.md",
+    "2. 计算机基础/2.2 计算机网络/计算机网络笔记/2. 物理层.md",
+    "2. 计算机基础/2.2 计算机网络/计算机网络笔记/0. 计算机网络面试总结.md",
+    "0. 工作日志/2023/2023-02.md"
+  ]
+}
