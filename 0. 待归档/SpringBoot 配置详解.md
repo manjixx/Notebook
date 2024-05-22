@@ -71,9 +71,9 @@ Spring Security SAML 扩展了 Spring Security 核心库，支持 SAML 标准，
 saml:
     keystore: remote_ca.jks     # key store file
     keyalias:                   # 别名
-    certificatepath:            #
-    digestAlgorithm:
-    signatureAlgorithm:
+    certificatepath:            # 证书路径
+    digestAlgorithm:            # 摘要算法
+    signatureAlgorithm:         # 签名算法
     loginurl:
     diagest:
         sha256:

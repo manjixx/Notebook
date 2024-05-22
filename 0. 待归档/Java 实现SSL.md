@@ -170,7 +170,7 @@ public static void main(String[] args) throws Exception {
         sslSocket.setEnabledCipherSuites(supported);
  
         //发送
-        OutputStream out=sslSocket.getOutputStream();
+        OutputStream out=sslSocket.getOutputStream(); 
         out.write("hello".getBytes());
  
     }

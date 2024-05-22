@@ -12,7 +12,7 @@ server:
     key-store-type: PKCS12
 ```
 
-Spring Cloud Gateway可以路由请求到http或https的服务，如果是将请求路由到https服务，可以通过下面的配置，让网关信任所有的后面服务的证书：
+Spring Cloud Gateway可以路由请求到 http 或 https 的服务，如果是将请求路由到https服务，可以通过下面的配置，让网关信任所有的后面服务的证书：
 
 ```yml
 spring:
