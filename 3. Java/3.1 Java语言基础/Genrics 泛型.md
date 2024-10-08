@@ -30,7 +30,9 @@ public class Main {
 
 因此引入泛型，可以达到只创建一个类就可打印多种类型。 
 
-## 泛型类
+## 二、泛型的基本使用
+
+### 2.1 泛型类
 
 - 通过在类名称后边增加 `<T>` 来定义泛型类，当然 T 可以用其他字符/字符串进行替代
 - 泛型类本质是将类型作为一个参数传入
@@ -82,78 +84,9 @@ public class Main {
 }
 ```
 
-## 类型参数的约束
+### 2.2 泛型接口
 
-- 用类型的方式约束：当需要类型参数可以做一些约束，比如传入类型参数必须是某个类型的子类型。此时可以用 `extends`
-- 在 java 中 这被称为 Boundary Generics
-- 用接口的方式约束：此时还需要使用 extends 而不能使用 implements 来实现接口
-- 当同时使用类和接口进行约束时，类必须放在接口之前。
-  
-```java
-// Vehicle 是一个类，Thing 是一个接口
-public class Printer<T extends Vehicle & Thing> {
-    T content;
-    Printer(T content){
-        this.content = content;
-    }
-
-    public void print() {
-        System.out.println(content);
-    }
-
-}
-
-// 调用泛型类
-
-public class Main {
-    public static void main(String[] args){
-        // 打印 Integer 类，此时会报错，因为Integer 不是 Vehicle 的子类型
-        Printer<Integer> printer = new Printer<>(123);
-        printer.print();
-
-        // 打印 S
-        Printer<Car> s_printer = new Printer<>(new Car());
-        s_printer.print();
-    }
-}
-```
-
-## 类型安全
-
-在日常使用 java 时，我们总会有意无意使用泛型，比如使用集合框架。
-
-疑问：使用集合框架时，能否添加任何元素呢？
-
-- 可以这样使用，但是不建议这样使用
-- Java 的类型检查发生在编译阶段，而不是运行阶段，因此例子中进行强制类型转换后IDEA不会报错，因为此时类型检查无误，但是运行时会报错。
-
-```java
-
-public class Main {
-    public static void main(String[] args) {
-        List<String> list = new ArrayList<>();
-        list.add("hello world");
-        list.add("123");
-        System.out.println(list);
-        
-        
-        // 类型安全例子
-        List<Object> list = new ArrayList<>();
-        list.add("hello world");
-        list.add(1234);
-
-        // 如果不增加强制类型转换，ide 将会报错，因为此时还不知道取出来的是什么类型
-        // 而增加强制类型转换后，即使取出的类型为 int 类型，此时也不会报错 
-        String item = (String) list.get(1);
-        // 运行时将会报错。
-        System.out.println(item);
-
-    }
-}
-
-```
-
-## 泛型方法
+### 2.3 泛型方法
 
 泛型也经常使用在函数上，称之为 Generic method。
 
@@ -212,7 +145,82 @@ public class Main {
 
 ```
 
-## 通配符
+
+
+### 2.4 泛型的上下限
+
+- 用类型的方式约束：当需要类型参数可以做一些约束，比如传入类型参数必须是某个类型的子类型。此时可以用 `extends`
+- 在 java 中 这被称为 Boundary Generics
+- 用接口的方式约束：此时还需要使用 extends 而不能使用 implements 来实现接口
+- 当同时使用类和接口进行约束时，类必须放在接口之前。
+  
+```java
+// Vehicle 是一个类，Thing 是一个接口
+public class Printer<T extends Vehicle & Thing> {
+    T content;
+    Printer(T content){
+        this.content = content;
+    }
+
+    public void print() {
+        System.out.println(content);
+    }
+
+}
+
+// 调用泛型类
+
+public class Main {
+    public static void main(String[] args){
+        // 打印 Integer 类，此时会报错，因为Integer 不是 Vehicle 的子类型
+        Printer<Integer> printer = new Printer<>(123);
+        printer.print();
+
+        // 打印 S
+        Printer<Car> s_printer = new Printer<>(new Car());
+        s_printer.print();
+    }
+}
+```
+
+### 2.5 泛型数组
+
+### 类型安全
+
+在日常使用 java 时，我们总会有意无意使用泛型，比如使用集合框架。
+
+疑问：使用集合框架时，能否添加任何元素呢？
+
+- 可以这样使用，但是不建议这样使用
+- Java 的类型检查发生在编译阶段，而不是运行阶段，因此例子中进行强制类型转换后IDEA不会报错，因为此时类型检查无误，但是运行时会报错。
+
+```java
+
+public class Main {
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<>();
+        list.add("hello world");
+        list.add("123");
+        System.out.println(list);
+        
+        
+        // 类型安全例子
+        List<Object> list = new ArrayList<>();
+        list.add("hello world");
+        list.add(1234);
+
+        // 如果不增加强制类型转换，idea 将会报错，因为此时还不知道取出来的是什么类型
+        // 而增加强制类型转换后，即使取出的类型为 int 类型，此时也不会报错 
+        String item = (String) list.get(1);
+        // 运行时将会报错。
+        System.out.println(item);
+
+    }
+}
+
+```
+
+### 通配符
 
 当遇到类型参数是 list 类型时，该如何处理呢？
 
@@ -287,3 +295,30 @@ public class Main {
 }
 
 ```
+
+## 三、深入理解泛型
+
+> 如何理解 Java 中的泛型是伪泛型？ 泛型中类型擦出
+
+> 如何证明类型擦除？
+
+> 如何理解泛型的编译期检查？ 
+
+> 如何理解泛型的编译期检查？
+
+> 如何理解泛型的多态？泛型的桥接方法
+
+> 如何理解基本类型不能作为泛型类型？
+
+> 如何理解泛型类型不能实例化？
+
+> 泛型数组：能不能采用具体的泛型类型进行初始化？
+
+> 泛型数组：如何正确的初始化泛型数组实例？
+
+> 如何理解泛型类中的静态方法和静态变量？
+
+> 如何理解异常中使用泛型？
+
+> 如何获取泛型的参数类型?
+
