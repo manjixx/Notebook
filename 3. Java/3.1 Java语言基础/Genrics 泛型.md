@@ -2,7 +2,13 @@
 
 ## 为什么引入泛型
 
-需求：创建一个类打印 Integer 变量
+泛型的本质是为了参数化类型（在不创建新的类型的情况下，通过泛型指定的不同类型来控制形参具体限制的类型）。也就是说在泛型使用过程中，操作的数据类型被指定为一个参数，这种参数类型可以用在类、接口和方法中，分别被称为泛型类、泛型接口、泛型方法。
+
+**引入泛型的意义：** 多种数据类型执行相同的代码，代码复用。
+
+**Case1**:创建一个类打印 Integer 变量
+
+当我们需要换一种类打印，比如 String, Float, Double 类等时，我们需要创建新的类。这样会导致代码的重复性。
 
 ```java
 public class IntegerPrinter {
@@ -26,9 +32,32 @@ public class Main {
 
 ```
 
-当我们需要换一种类打印，比如 String, Float, Double 类等时，我们需要创建新的类。这样会导致代码的重复性。
+**Case2:** 实现不同类型的加法
 
-因此引入泛型，可以达到只创建一个类就可打印多种类型。 
+```java
+# 旧代码
+
+private static int add(int a, int b){
+    System.out.println(a + "+" + b + "=" + (a + b));
+    return a + b;
+}
+
+private static float add(float a, float b){
+    System.out.println(a + "+" + b + "=" + (a + b));
+    return a + b;
+}
+
+private static double add(double a, double b)
+System.out.println(a + "+" + b + "=" + (a + b));
+    return a + b;
+
+// 通过泛型，实现方法复用
+
+private static <T extends Number> double (T a, T b){
+    System.out.println(a + "+" + b + "=" + (a.doubleValue() + b.doubleValue()));
+    return a.doubleValue() + b.doubleValue();
+}
+```
 
 ## 二、泛型的基本使用
 
@@ -49,10 +78,24 @@ public class Printer<T> {
     public void print() {
         System.out.println(content);
     }
-
 }
 
-public class Printer<T, K> {
+// 调用泛型类
+public class Main {
+    public static void main(String[] args){
+        // 打印 Integer 类
+        Printer<Integer> printer = new Printer<>(123);
+        printer.print();
+        // 打印 String 类
+        Printer<String> s_printer = new Printer<>("hello world");
+        s_printer.print();
+    }
+}
+```
+
+```java
+// 多元泛型
+public class Printer<T, K> {  // 此处指定了两个泛型类型
     T content;
     K content2;
 
@@ -65,30 +108,90 @@ public class Printer<T, K> {
         System.out.println(content);
         System.out.println(content2);    
     }
-
 }
 
-
 // 调用泛型类
-
 public class Main {
     public static void main(String[] args){
         // 打印 Integer 类
-        Printer<Integer> printer = new Printer<>(123);
+        Printer<Integer, String> printer = new Printer<>(123,"456");
         printer.print();
-
-        // 打印 String 类
-        Printer<String> s_printer = new Printer<>("hello world");
-        s_printer.print();
     }
 }
+
 ```
 
 ### 2.2 泛型接口
 
+```java
+interface Info<T>{  // 在接口上定义泛型
+    public T getVar();  // 定义抽象方法，抽象方法返回值就是泛型类型
+}
+
+class InfoImpl<T> implements Info<T>{   // 泛型接口子类
+    private T var;  //定义属性
+
+    public InfoImple(T var){    // 通过构造方法设置属性内容
+        this.setVar(var);
+    }
+
+    public void setVar(T var){
+        this.var = var;
+    }
+
+    public T getVar(){
+        return this.var;
+    }
+}
+
+// 调用泛型类
+public class Main {
+    public static void main(String[] args){
+        Info<String> info = null;   // 声明接口对象
+        i = new InfoImpl<String>("Tom");    // 通过子类实例化对象
+        System.out.println("内容" + i.getVar());
+    }
+}
+
+```
+
 ### 2.3 泛型方法
 
 泛型也经常使用在函数上，称之为 Generic method。
+
+**泛型方法语法格式**
+
+```java
+/**
+ * 泛型方法 
+ * @param <T> 声明一个泛型 T
+ * @param c 用来创建泛型对象
+ * @return 
+ * @throws InstantiationException
+ * @throws IllegalAccessException
+ */
+
+public <T> T getObjcet(Class<T> c) throws InstantiationException, IllegalAccessException{
+    // 创建泛型对象
+    T t = c.newInstance();
+    return t;
+}
+```
+
+上述代码中从左往右依次表达内容如下：
+
+- `<T>` 声明此方法为泛型方法
+- `T` 声明此方法返回值类型为类型T
+- `Class<T>` 指明泛型 T 的具体类型
+- `c` 用来创建泛型 T 代表的类型的对象
+
+**调用泛型方法**
+
+```java
+Generic genric = new Generic;
+// 此时 obj 就是 User 类的实例
+Object object = generic.getObject(Class.forName("com.java.test.User"));
+```
 
 需求：写一个 print 方法，去打印任意变量
 
