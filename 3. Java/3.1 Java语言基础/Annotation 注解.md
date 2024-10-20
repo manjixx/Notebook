@@ -928,3 +928,6 @@ public class DeptController extends BaseController {
 ```
 
 你也可以看到权限管理也是通过类似的注解（`@RequiresPermissions`）机制来实现的。所以我们可以看到，通过**注解+AOP**最终的目标是为了实现模块的解耦。
+
+
+https://segmentfault.com/a/1190000038996346
