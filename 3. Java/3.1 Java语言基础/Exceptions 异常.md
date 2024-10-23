@@ -126,13 +126,240 @@ private static void readFile(String filePath) throws IOException {
 
 ### 2.3 异常的抛出（throw）
 
+如果代码可能会引发某种错误，可以创建一个合适的异常类实例并抛出它，这就是抛出异常。如下所示：
+
+```java
+public static double method(int value) {
+    if(value == 0) {
+        throw new ArithmeticException("参数不能为0"); //抛出一个运行时异常
+    }
+    return 5.0 / value;
+}
+```
+
+**大部分情况下都不需要手动抛出异常**，因为Java的大部分方法要么已经处理异常，要么已声明异常。所以**一般都是捕获异常或者再往上抛。**
+
+**有时我们会从 `catch` 中抛出一个异常**，目的是为了改变异常的类型。多用于在多系统集成时，当某个子系统故障，异常类型可能有多种，可以用统一的异常类型向外暴露，不需暴露太多内部异常细节。
+
+```java
+private static void readFile(String filePath) throws MyException {    
+    try {
+        // code
+    } catch (IOException e) {
+        MyException ex = new MyException("read file failed.");
+        ex.initCause(e);
+        throw ex;
+    }
+}
+```
+
 ### 2.4 异常的自定义
+
+定义一个异常类应包含两个构造函数，
+
+- 一个无参构造函数
+- 一个带有详细描述信息的构造函数（Throwable 的 toString 方法会打印这些详细信息，调试时很有用）
+
+```java
+public class MyException extends Exception {
+    public MyException(){ }
+    public MyException(String msg){
+        super(msg);
+    }
+    // ...
+}
+```
 
 ### 2.5 异常的捕获
 
+异常捕获处理的方法通常有：
+
+- `try-catch`
+- `try-catch-finally`
+- `try-finally`
+- `try-with-resource`
+
+> **try-catch**
+
+在一个 `try-catch` 语句块中可以捕获多个异常类型，并对不同类型的异常做出不同的处理
+
+```java
+private static void readFile(String filePath) {
+    try {
+        // code
+    } catch (FileNotFoundException e) {
+        // handle FileNotFoundException
+    } catch (IOException e){
+        // handle IOException
+    }
+}
+```
+
+同一个 `catch` 也可以捕获多种类型异常，用 `|` 隔开
+
+```java
+private static void readFile(String filePath) {
+    try {
+        // code
+    } catch (FileNotFoundException | UnknownHostException e) {
+        // handle FileNotFoundException or UnknownHostException
+    } catch (IOException e){
+        // handle IOException
+    }
+}
+```
+
+> **try-catch-finally**
+
+- 常规语法
+
+```java
+try {                        
+    //执行程序代码，可能会出现异常                 
+} catch(Exception e) {   
+    //捕获异常并处理   
+} finally {
+    //必执行的代码
+}
+```
+
+- 执行顺序
+  
+  - **当try没有捕获到异常时**：try语句块中的语句逐一被执行，程序将跳过catch语句块，执行finally语句块和其后的语句；
+  - **当try捕获到异常，catch语句块里没有处理此异常的情况**：当try语句块里的某条语句出现异常时，而没有处理此异常的catch语句块时，此异常将会抛给JVM处理，finally语句块里的语句还是会被执行，但finally语句块后的语句不会被执行；
+  - **当try捕获到异常，catch语句块里有处理此异常的情况**：在try语句块中是按照顺序来执行的，当执行到某一条语句出现异常时，程序将跳到catch语句块，并与catch语句块逐一匹配，找到与之对应的处理程序，其他的catch语句块将不会被执行，而try语句块中，出现异常之后的语句也不会被执行，catch语句块执行完后，执行finally语句块里的语句，最后执行finally语句块后的语句；
+
+- 案例
+  
+```java
+private static void readFile(String filePath) throws MyException {
+    File file = new File(filePath);
+    String result;
+    BufferedReader reader = null;
+    try {
+        reader = new BufferedReader(new FileReader(file));
+        while((result = reader.readLine())!=null) {
+            System.out.println(result);
+        }
+    } catch (IOException e) {
+        System.out.println("readFile method catch block.");
+        MyException ex = new MyException("read file failed.");
+        ex.initCause(e);
+        throw ex;
+    } finally {
+        System.out.println("readFile method finally block.");
+        if (null != reader) {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
+
+> **try-finally**
+
+try块中引起异常，异常代码之后的语句不再执行，直接执行finally语句。
+
+try块没有引发异常，则执行完try块就执行finally语句。**try-finally可用在不需要捕获异常的代码，可以保证资源在使用后被关闭**。例如IO流中执行完相应操作后，关闭相应资源；使用Lock对象保证线程同步，通过finally可以保证锁会被释放；数据库连接代码时，关闭连接操作等等。
+
+```java
+//以Lock加锁为例，演示try-finally
+ReentrantLock lock = new ReentrantLock();
+try {
+    //需要加锁的代码
+} finally {
+    lock.unlock(); //保证锁一定被释放
+}
+```
+
+`finally` 遇到如下情况下不会执行：
+
+- 在前面的代码中用了`System.exit()`退出程序。
+- `finally`语句块中发生了异常。
+- 程序所在的线程死亡。
+- 关闭CPU。
+
+> **try-with-resouce**
+
+上面例子中，`finally` 中的 `close` 方法也可能抛出 `IOException`, 从而覆盖了原始异常。`JAVA 7` 提供了更优雅的方式来实现资源的自动释放，**自动释放的资源需要是实现了 `AutoCloseable` 接口的类**。
+
+- 代码实现
+
+```java
+private  static void tryWithResourceTest(){
+    try (Scanner scanner = new Scanner(new FileInputStream("c:/abc"),"UTF-8")){
+        // code
+    } catch (IOException e){
+        // handle exception
+    }
+}
+```
+
+- Scanner 代码
+
+```java
+public final class Scanner implements Iterator<String>, Closeable {
+  // ...
+}
+public interface Closeable extends AutoCloseable {
+    public void close() throws IOException;
+}
+```
+
+`try` 代码块退出时，会自动调用 `scanner.close` 方法，**和把 `scanner.close` 方法放在 `finally` 代码块中不同的是，若 `scanner.close` 抛出异常，则会被抑制，抛出的仍然为原始异常**。被抑制的异常会由 `addSusppressed` 方法添加到原来的异常，如果想要获取被抑制的异常列表，可以调用 `getSuppressed` 方法来获取。
+
 ### 2.6 常用的异常
 
+> **RuntimeException**
+
+- `java.lang.ArrayIndexOutOfBoundsException` 数组索引越界异常。当对数组的索引值为负数或大于等于数组大小时抛出。
+- `java.lang.ArithmeticException` 算术条件异常。譬如：整数除零等。
+- `java.lang.NullPointerException` 空指针异常。当应用试图在要求使用对象的地方使用了null时，抛出该异常。譬如：调用null对象的实例方法、访问null对象的属性、计算null对象的长度、使用throw语句抛出null等等
+- `java.lang.ClassNotFoundException` 找不到类异常。当应用试图根据字符串形式的类名构造类，而在遍历CLASSPAH之后找不到对应名称的class文件时，抛出该异常。
+- `java.lang.NegativeArraySizeException` 数组长度为负异常
+- `java.lang.ArrayStoreException` 数组中包含不兼容的值抛出的异常
+- `java.lang.SecurityException` 安全性异常
+- `java.lang.IllegalArgumentException` 非法参数异常
+
+> **IOException**
+
+- `IOException`：操作输入流和输出流时可能出现的异常。
+- `EOFException` 文件已结束异常
+- `FileNotFoundException` 文件未找到异常
+
+> **其他**
+
+- `ClassCastException` 类型转换异常类
+- `ArrayStoreException` 数组中包含不兼容的值抛出的异常
+- `SQLException` 操作数据库异常类
+- `NoSuchFieldException` 字段未找到异常
+- `NoSuchMethodException` 方法未找到抛出的异常
+- `NumberFormatException` 字符串转换为数字抛出的异常
+- `StringIndexOutOfBoundsException` 字符串索引超出范围抛出的异常
+- `IllegalAccessException` 不允许访问某类异常
+- `InstantiationException` 当应用程序试图使用`Class`类中的`newInstance()`方法创建一个类的实例，而指定的类对象无法被实例化时，抛出该异常
+
 ### 2.7 总结
+
+- try、catch和finally都不能单独使用，只能是try-catch、try-finally或者try-catch-finally。
+- try语句块监控代码，出现异常就停止执行下面的代码，然后将异常移交给catch语句块来处理。
+- finally语句块中的代码一定会被执行，常用于回收资源 。
+- throws：声明一个异常，告知方法调用者。
+- throw ：抛出一个异常，至于该异常被捕获还是继续抛出都与它无关。
+
+Java编程思想一书中，对异常的总结。
+
+- 在恰当的级别处理问题。（在知道该如何处理的情况下了捕获异常。）
+- 解决问题并且重新调用产生异常的方法。
+- 进行少许修补，然后绕过异常发生的地方继续执行。
+- 用别的数据进行计算，以代替方法预计会返回的值。
+- 把当前运行环境下能做的事尽量做完，然后把相同的异常重抛到更高层。
+- 把当前运行环境下能做的事尽量做完，然后把不同的异常抛到更高层。
+- 终止程序。进行简化（如果你的异常模式使问题变得太复杂，那么用起来会非常痛苦）。
+- 让类库和程序更安全。
 
 ****
 
