@@ -365,6 +365,132 @@ Java编程思想一书中，对异常的总结。
 
 ## 三、异常实践
 
+> **提示**
+> 在 Java 中处理异常并不是一个简单的事情。不仅仅初学者很难理解，即使一些有经验的开发者也需要花费很多时间来思考如何处理异常，包括需要处理哪些异常，怎样处理等等。这也是绝大多数开发团队都会制定一些规则来规范进行异常处理的原因。
+
+异常不仅仅是一个**错误控制机制**，也是一个**通信媒介**。因此，为了和同事更好的合作，一个团队必须要制定出一个**最佳实践和规则**，只有这样，团队成员才能理解这些通用概念，同时在工作中使用它。
+
+### 3.1 只针对不正常的情况才使用异常
+
+> 异常只应该被用于不正常的条件，它们永远不应该被用于正常的控制流。《阿里手册》中：【强制】Java 类库中定义的可以**通过预检查方式规避的`RuntimeException`异常不应该通过`catch` 的方式来处理**，比如：`NullPointerException，IndexOutOfBoundsException`等等。
+
+举例：**在解析字符串形式的数字时，可能存在数字格式错误**，不得通过`catch Exception`来实现
+
+- 代码1
+
+```java
+if (obj != null) {
+  //...
+}
+```
+
+- 代码2
+
+```java
+try { 
+  obj.method(); 
+} catch (NullPointerException e) {
+  //...
+}
+```
+
+主要原因有三点：
+
+- 异常机制的设计初衷是用于不正常的情况，所以很少会有JVM试图实现对异常机制的性能进行优化。所以，创建、抛出和捕获异常的开销是很昂贵的。
+- 把代码放在`try-catch`中返回阻止了JVM实现本来可能要执行的某些特定的优化。
+- **对数组进行遍历的标准模式并不会导致冗余的检查**，有些现代的JVM实现会将它们优化掉。
+
+### 3.2 在 finally 块中清理资源或者使用 try-with-resource 语句
+
+> **错误示例**
+
+```java
+public void doNotCloseResourceInTry() {
+    FileInputStream inputStream = null;
+    try {
+        File file = new File("./tmp.txt");
+        inputStream = new FileInputStream(file);
+        // use the inputStream to read a file
+        // do NOT do this
+        inputStream.close();
+    } catch (FileNotFoundException e) {
+        log.error(e);
+    } catch (IOException e) {
+        log.error(e);
+    }
+}
+```
+
+上述代码问题在于：没有异常抛出的时候，这段代码才可以正常工作。try 代码块内代码会正常执行，并且资源可以正常关闭。但是，当异常抛出时，这意味着代码可能不会执行到 try 代码块的最后部分。结果就是，资源无法被正常关闭。
+
+因此应该把**清理工作的代码放到 finally 里去，或者使用 try-with-resource 特性**。
+
+- 方法一：使用finally 代码块
+
+```java
+public void closeResourceInFinally() {
+    FileInputStream inputStream = null;
+    try {
+        File file = new File("./tmp.txt");
+        inputStream = new FileInputStream(file);
+        // use the inputStream to read a file
+    } catch (FileNotFoundException e) {
+        log.error(e);
+    } finally {
+        if (inputStream != null) {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                log.error(e);
+            }
+        }
+    }
+}
+```
+
+- 方法二：Java 7 的 `try-with-resource` 语法
+
+如果你的资源实现了 `AutoCloseable` 接口，可以使用这个语法。大多数的 `Java` 标准资源都继承了这个接口。当你在 try 子句中打开资源，**资源会在 try 代码块执行后或异常处理后自动关闭**。
+
+```java
+public void automaticallyCloseResource() {
+    File file = new File("./tmp.txt");
+    try (FileInputStream inputStream = new FileInputStream(file);) {
+        // use the inputStream to read a file
+    } catch (FileNotFoundException e) {
+        log.error(e);
+    } catch (IOException e) {
+        log.error(e);
+    }
+}
+```
+
+### 3.3 尽量使用标准异常
+
+**代码复用是值得提倡的，这是一条通用规则，异常也不例外**。
+
+复用现有异常有如下好处：
+
+- 使得API更加易于学习和使用，因为其与程序员原来已经熟悉的习惯用法是一致的。
+- 对于用到这些API的程序而言，它们的可读性更好，因为它们不会充斥着程序员不熟悉的异常。
+- **异常类越少，意味着内存占用越小，并且转载这些类的时间开销也越小**。
+
+Java 标准异常中有几个是经常被使用的异常，如下表格：
+
+| 异常  | 使用场合  |
+|---|---|
+| IllegalArgumentException  | 参数值不合适  |
+| IllegalStateException  | 参数状态不合适  |
+| NullPointerExceptioin  | 在null被禁止的状况下参数值为null  |
+| IndexOutOfBoundException  | 下标越界  |
+| ConcurrentModificationException  |  在禁止并发修改的情况下，对象检测到并发修改 |
+| UnsupportedOperationException  | 对象不支持客户请求的方法  |
+
+注意：
+
+- 在许可的条件下，其它的异常也可以被重用
+- 选择重用哪一种异常并没有必须遵循的规则
+
 ****
 
 ## 四、深入理解异常
