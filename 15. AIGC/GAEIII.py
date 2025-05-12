@@ -38,6 +38,20 @@ class Version:
                         )
         return traffic
 
+    @classmethod
+    def from_csv_row(cls, row):
+        """从CSV行创建Version对象"""
+        return cls(
+            vid=int(row['vid']),
+            batch_size=int(row['batch_size']),
+            users=int(float(row['users'])),
+            size_gb=float(row['size_gb']),
+            start_time=datetime.strptime(row['start_time'], "%Y-%m-%d"),
+            end_time=datetime.strptime(row['end_time'], "%Y-%m-%d"),
+            period=int(row['period']),
+            traffic_pattern=list(map(float, row['traffic_pattern'].split(',')))
+        )
+
 
 class GeneticOptimizer:
     def __init__(self, versions, pop_size=50, generations=200, mutation_rate=0.1, crossover_rate=0.8):
@@ -47,6 +61,44 @@ class GeneticOptimizer:
         self.mutation_rate = mutation_rate
         self.crossover_rate = crossover_rate
         self.history = []  # 新增：用于记录各代最佳流量分布
+
+    def initialize_population(self):
+        population = []
+        for _ in range(self.pop_size):
+            individual = []
+            for version in self.versions:
+                release_dates = self.generate_valid_dates(version)
+                proportions = self.generate_valid_proportions(version)
+                individual.append((release_dates, proportions))
+            population.append(individual)
+        return population
+
+    def generate_valid_proportions(self, version):
+        """生成满足业务约束的发布比例"""
+        while True:
+            # 初始比例<=1%
+            p1 = min(random.uniform(0, 0.011), 0.01)
+            remaining = 1 - p1
+            max_other = remaining / (version.batch_size - 1)
+
+            # 其他比例在±10%范围内波动
+            other_props = []
+            for _ in range(version.batch_size - 1):
+                prop = random.uniform(max_other * 0.9, max_other * 1.1)
+                other_props.append(prop)
+
+            # 归一化处理
+            total_other = sum(other_props)
+            if total_other == 0:
+                continue
+            scale = remaining / total_other
+            other_props = [p * scale for p in other_props]
+
+            # 最终检查
+            if all(p <= max_other * 1.1 for p in other_props) and \
+                    abs(sum([p1] + other_props) - 1) < 1e-6:
+                return [p1] + other_props
+
 
 
     def generate_valid_dates(self, version):
@@ -78,18 +130,6 @@ class GeneticOptimizer:
             idx = min(i * step, len(legal_dates) - 1)
             selected.append(legal_dates[idx])
         return selected
-
-    def initialize_population(self):
-        population = []
-        for _ in range(self.pop_size):
-            individual = []
-            for version in self.versions:
-                release_dates = self.generate_valid_dates(version)
-                p1 = random.uniform(0, 0.01)
-                proportions = [p1] + [(1 - p1) / (version.batch_size - 1)] * (version.batch_size - 1)
-                individual.append((release_dates, proportions))
-            population.append(individual)
-        return population
 
     def fitness(self, individual):
         """改进的适应度函数，考虑多种分布特性"""
@@ -183,24 +223,22 @@ class GeneticOptimizer:
         return dates
 
     def mutate_proportions(self, props, version):
-        """比例变异策略"""
-        # 保持约束：p1 <= 1% 且 sum(props)=1
-        if random.random() < 0.7:
-            # 变异初始比例（70%概率）
-            new_p1 = np.clip(
-                props[0] + random.uniform(-0.005, 0.005),
-                0, 0.01
-            )
-            remaining = 1 - new_p1
-            other_props = [remaining / (len(props) - 1)] * (len(props) - 1)
-            return [new_p1] + other_props
-        else:
-            # 扰动其他比例（30%概率）
-            noise = np.random.normal(0, 0.01, len(props) - 1)
-            other_props = np.array(props[1:]) + noise
-            other_props = np.clip(other_props, 0, 0.5)  # 防止单个批次过大
-            other_props /= other_props.sum()
-            return [props[0]] + other_props.tolist()
+        """带约束的比例变异"""
+        new_props = props.copy()
+        idx = random.randint(0, len(props) - 1)
+
+        if idx == 0:  # 变异初始比例
+            delta = random.uniform(-0.005, 0.005)
+            new_props[0] = np.clip(new_props[0] + delta, 0, 0.01)
+        else:  # 变异其他比例
+            max_val = (1 - new_props[0]) / (version.batch_size - 1) * 1.1
+            delta = random.uniform(-max_val * 0.1, max_val * 0.1)
+            new_props[idx] = np.clip(new_props[idx] + delta, 0, max_val)
+
+        # 归一化处理
+        total = sum(new_props)
+        new_props = [p / total for p in new_props]
+        return new_props
 
     def optimize(self):
         population = self.initialize_population()
@@ -414,6 +452,16 @@ class GeneticOptimizer:
         }
         return desc.get(key, "")
 
+    @classmethod
+    def load_from_csv(cls, filename):
+        versions = []
+        with open(filename, 'r') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                # 转换CSV行数据为对象
+                versions.append(Version.from_csv_row(row))
+        return cls(versions)
+
 def generate_test_versions(num_versions=5, include_cross_month=True, seed=None):
     """
     生成多版本测试数据生成器
@@ -498,7 +546,7 @@ def generate_test_versions(num_versions=5, include_cross_month=True, seed=None):
 if __name__ == "__main__":
     # 生成可重复的测试数据
     test_versions = generate_test_versions(
-        num_versions=5,
+        num_versions=100,
         include_cross_month=True,
         seed=42  # 固定种子保证可重复性
     )
@@ -515,7 +563,7 @@ if __name__ == "__main__":
         print(f"End: {v.end_time.strftime('%Y-%m-%d')}")
         print(f"Traffic Pattern: {[round(p, 3) for p in v.traffic_pattern[:5]]}...")
 
-    optimizer = GeneticOptimizer(test_versions, pop_size=50, generations=100)
+    optimizer = GeneticOptimizer(test_versions, pop_size=100, generations=300)
     best = optimizer.optimize()
 
     # 输出方案细节
